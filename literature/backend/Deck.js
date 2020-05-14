@@ -17,9 +17,7 @@ function Deck() {
                 }
             }
         }
-      }
     }
-  }
 }
 
 Deck.prototype.shuffle = function shuffle() {

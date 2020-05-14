@@ -17,7 +17,7 @@ app.use(cors());
 
 const port = process.env.PORT || 5000;
 
-const server = http.createServer(app).listen(port);
+const server = http.createServer(app);
 const io = socketIO(server);
 
 server.listen(port, () => console.log(`Listening on port ${port}`));

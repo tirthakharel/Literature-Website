@@ -7,7 +7,7 @@ function Card(rank, suit) {
 }
 
 Card.prototype.getSet = function getSet() {
-  if (this.rank == '8' || this.suit == 'Joker') {
+  if (this.rank === '8' || this.suit === 'Joker') {
     return 'Jokers';
   } else {
     if (low.includes(this.rank)) {
@@ -17,5 +17,10 @@ Card.prototype.getSet = function getSet() {
     }
   }
 };
+
+Card.prototype.toString = function toString() {
+  return this.suit === 'Joker' ? this.rank + ' ' + this.suit : 
+                                 this.rank + ' of ' + this.suit;
+}
 
 module.exports = Card;

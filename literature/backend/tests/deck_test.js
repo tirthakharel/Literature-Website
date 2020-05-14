@@ -17,6 +17,8 @@ for (let i = 0; i < test.players.length; i++) {
     console.log(test.players[i].hand);   
 }
 
+console.log(test.players[0].getSets());
+console.log(test.players[0].hand[0].toString());
 //const testDeck = new Deck();
 
 // testDeck.shuffle();

@@ -14,9 +14,9 @@ Card.prototype.getSet() = function getSet() {
         return "Jokers";
     } else {
         if (low.includes(this.rank)) {
-            return "Low" + this.suit;
+            return "Low " + this.suit;
         } else if (high.includes(this.rank)) {
-            return "High" + this.suit;
+            return "High " + this.suit;
         }
     }
 }

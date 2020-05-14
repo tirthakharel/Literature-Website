@@ -19,6 +19,9 @@ Game.prototype.start = function start() {
 
 Game.prototype.addPlayer = function addPlayer(name) {
   this.players.push(new Player(name));
+  if (this.players.length === 1) {
+    this.players[0].leader = true;
+  }
 }
 
 Game.prototype.removePlayer = function removePlayer(name) {
@@ -43,8 +46,48 @@ Game.prototype.ask = function ask(sourcePlayer, targetPlayer, card) {
   }
 }
 
-Game.prototype.declare = function declare(player) {
+Game.prototype.declare = function declare(player, map) {
   if (player.isTurn) {
+    for (let [player, cards] of map) {
+      for (var i = 0; i < cards.length; i++) {
+        if (!player.hasCard(cards[i])) {
+          // incorrect declare
+          if (player.team === 0) {
+            this.scoreTeam1 ++;
+          } else {
+            this.scoreTeam0 ++;
+          }
+          this.deleteCards(map);
+          return;
+        }
+      }
+    }
+    // correct declare
+    if (player.team === 0) {
+      this.scoreTeam0 ++;
+    } else {
+      this.scoreTeam1 ++;
+    }
+    this.deleteCards(map);
+  }
+}
 
+Game.prototype.deleteCards = function deleteCards(map) {
+  for (let cards of map.values()) {
+    for (var i = 0; i < cards.length; i++) {
+      for (var j = 0; j < this.players.length; j++) {
+        if (this.players[j].hasCard(cards[i])) {
+          this.players[j].removeFromHand(cards[i]);
+          break;
+        }
+      }
+    }
+  }
+}
+
+Game.prototype.transfer = function transfer(sourcePlayer, targetPlayer) {
+  if (sourcePlayer.isTurn) {
+    sourcePlayer.isTurn = false;
+    targetPlayer.isTurn = true;
   }
 }

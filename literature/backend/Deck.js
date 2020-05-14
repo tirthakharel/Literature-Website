@@ -1,5 +1,15 @@
-const { suits, ranks, sets } = require('../constants/constants.js');
-const { lowHearts, lowSpades, lowDiamonds, lowClubs, highClubs, highDiamonds, highSpades, highHearts, jokers} = require('../constants/constants.js');
+const { suits, 
+        ranks, 
+        lowHearts, 
+        lowSpades, 
+        lowDiamonds, 
+        lowClubs, 
+        highClubs, 
+        highDiamonds, 
+        highSpades, 
+        highHearts, 
+        jokers 
+    } = require('../constants/constants.js');
 
 const Card = require('./Card');
 
@@ -37,25 +47,30 @@ Deck.prototype.deal = function deal(players) {
 }
 
 Deck.getSet = function getSet(set) {
-    if (set === "Low Hearts") {
-        return lowHearts;
-    } else if (set === "Low Diamonds") {
-        return lowDiamonds;
-    } else if (set === "Low Spades") {
-        return lowSpades;
-    } else if (set === "Low Clubs") {
-        return lowClubs;
-    } else if (set === "High Hearts") {
-        return highHearts;
-    } else if (set === "High Diamonds") {
-        return highDiamonds;
-    } else if (set === "High Spades") {
-        return highSpades;
-    } else if (set === "High Clubs") {
-        return highClubs;
-    } else if (set === "Jokers") {
-        return jokers;
+
+    switch (set) {
+        case 'Low Hearts':
+            return lowHearts;
+        case 'High Hearts':
+            return highHearts;
+        case 'Low Diamonds':
+            return lowDiamonds;
+        case 'High Diamonds': 
+            return highDiamonds;
+        case 'Low Spades':
+            return lowSpades;
+        case 'High Spades':
+            return highSpades;
+        case 'Low Clubs':
+            return lowClubs;
+        case 'High Clubs':
+            return highClubs;
+        case 'Jokers':
+            return jokers;
+        default: 
+            break;
     }
+
 }
 
 

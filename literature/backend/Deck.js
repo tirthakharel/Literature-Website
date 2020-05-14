@@ -1,4 +1,5 @@
 const { suits, ranks, sets } = require('../constants/constants.js');
+const { lowHearts, lowSpades, lowDiamonds, lowClubs, highClubs, highDiamonds, highSpades, highHearts, jokers} = require('../constants/constants.js');
 
 const Card = require('./Card');
 

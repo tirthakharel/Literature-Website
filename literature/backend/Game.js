@@ -48,7 +48,7 @@ Game.prototype.ask = function ask(sourcePlayer, targetPlayer, card) {
   }
 }
 
-Game.prototype.declare = function declare(player, map) {
+Game.prototype.declare = function declare(player, map, set) {
   if (player.isTurn) {
     for (let [player, cards] of map) {
       for (let i = 0; i < cards.length; i++) {
@@ -59,7 +59,7 @@ Game.prototype.declare = function declare(player, map) {
           } else {
             this.scoreTeam0++;
           }
-          this.deleteCards(map);
+          this.deleteCards(set);
           return;
         }
       }
@@ -70,18 +70,17 @@ Game.prototype.declare = function declare(player, map) {
     } else {
       this.scoreTeam1++;
     }
-    this.deleteCards(map);
+    this.deleteCards(set);
   }
 }
 
-Game.prototype.deleteCards = function deleteCards(map) {
-  for (let cards of map.values()) {
-    for (let i = 0; i < cards.length; i++) {
-      for (let j = 0; j < this.players.length; j++) {
-        if (this.players[j].hasCard(cards[i])) {
-          this.players[j].removeFromHand(cards[i]);
-          break;
-        }
+Game.prototype.deleteCards = function deleteCards(set) {
+  let setArray = Deck.getSet(set);
+  for (let i = 0; i < setArray.length; i++) {
+    for (let j = 0; j < this.players.length; j++) {
+      if (this.players[j].hasCard(setArray[i])) {
+        this.players[j].removeFromHand(setArray[i]);
+        break;
       }
     }
   }

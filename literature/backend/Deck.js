@@ -15,7 +15,7 @@ const Card = require('./Card');
 
 function Deck() {
     this.deck = [];
-
+    
     for (let i = 0; i < suits.length; i++) {
         if (suits[i] == 'Joker') {
             this.deck.push(new Card('Red', suits[i]));
@@ -68,7 +68,7 @@ Deck.getSet = function getSet(set) {
         case 'Jokers':
             return jokers;
         default: 
-            break;
+            return [];
     }
 
 }

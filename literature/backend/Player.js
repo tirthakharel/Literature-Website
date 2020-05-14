@@ -1,4 +1,4 @@
-const Deck = require('./Deck');
+const Deck = require('./Deck.js');
 
 function Player(name) {
   this.hand = [];
@@ -15,7 +15,7 @@ Player.prototype.addToHand = function addToHand(card) {
 
 Player.prototype.removeFromHand = function removeFromHand(card) {
   for (let i = 0; i < this.hand; i++) {
-    if (this.hand[i].rank === card.rank && this.hand[i].suit === card.suit) {
+    if (this.hand[i].equals(card)) {
       this.hand.splice(i, 1);
     }
   }
@@ -23,7 +23,7 @@ Player.prototype.removeFromHand = function removeFromHand(card) {
 
 Player.prototype.hasCard = function hasCard(card) {
   for (let i = 0; i < this.hand; i++) {
-    if (this.hand[i].rank === card.rank && this.hand[i].suit === card.suit) {
+    if (this.hand[i].equals(card)) {
       return true;
     }
   }

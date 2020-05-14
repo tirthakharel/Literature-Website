@@ -1,4 +1,4 @@
-const { low, high } = require('../constants/constants.js');
+const constants = require('../constants/constants');
 
 function Card(rank, suit) {
   this.rank = rank;
@@ -7,24 +7,26 @@ function Card(rank, suit) {
 }
 
 Card.prototype.getSet = function getSet() {
+  console.log(constants);
   if (this.rank === '8' || this.suit === 'Joker') {
     return 'Jokers';
   } else {
-    if (low.includes(this.rank)) {
+    if (constants.low.includes(this.rank)) {
       return 'Low ' + this.suit;
-    } else if (high.includes(this.rank)) {
+    } else if (constants.high.includes(this.rank)) {
       return 'High ' + this.suit;
     }
   }
 };
 
 Card.prototype.toString = function toString() {
-  return this.suit === 'Joker' ? this.rank + ' ' + this.suit : 
-                                 this.rank + ' of ' + this.suit;
-}
+  return this.suit === 'Joker'
+    ? this.rank + ' ' + this.suit
+    : this.rank + ' of ' + this.suit;
+};
 
 Card.prototype.equals = function equals(card) {
   return this.rank === card.rank && this.suit === card.suit;
-}
+};
 
 module.exports = Card;

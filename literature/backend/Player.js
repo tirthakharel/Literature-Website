@@ -1,3 +1,5 @@
+const Deck = require('./Deck');
+
 function Player(name) {
   this.hand = [];
   this.name = name;
@@ -35,6 +37,23 @@ Player.prototype.getSets = function getSets() {
   });
 
   return Sets;
+};
+
+Player.prototype.availableCards = function availableCards(stringSet) {
+  const set = Deck.getSet(stringSet);
+  let arr = [];
+
+  set.forEach((card) => {
+    let index = this.hand.findIndex((element) => {
+      return card.equals(element);
+    });
+
+    if (index === -1) {
+      arr.push(card);
+    }
+  });
+
+  return arr;
 };
 
 module.exports = Player;

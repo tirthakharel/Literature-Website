@@ -1,4 +1,4 @@
-const Deck = require('../Deck.js');
+const Deck = require('./Deck.js');
 
 function Player(name) {
   this.hand = [];

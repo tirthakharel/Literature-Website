@@ -4,10 +4,12 @@ const Deck = require('./deck');
 function Game(io) {
   this.io = io;
   this.players = [];
+  this.scoreTeam0 = 0;
+  this.scoreTeam1 = 0;
 }
 
 Game.prototype.start = function start() {
-  if (this.players.length == 6 || this.players.length == 8) {
+  if (this.players.length === 6 || this.players.length === 8) {
     Deck.deal(this.players);
     this.players[1].isTurn = true;
   } else {
@@ -16,7 +18,7 @@ Game.prototype.start = function start() {
 }
 
 Game.prototype.addPlayer = function addPlayer(name) {
-  players.push(new Player(name));
+  this.players.push(new Player(name));
 }
 
 Game.prototype.removePlayer = function removePlayer(name) {

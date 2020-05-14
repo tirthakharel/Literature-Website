@@ -3,7 +3,6 @@ const { suits, ranks, sets } = require('../constants/constants.js');
 const Card = require('./Card');
 
 function Deck() {
-
     this.deck = [];
 
     for (let i = 0; i < suits.length; i++) {
@@ -28,13 +27,33 @@ Deck.prototype.shuffle = function shuffle() {
 }
 
 Deck.prototype.deal = function deal(players) {
-    
     this.shuffle();
-
     let numPlayers = players.length;
     
     for (let i = 0; i < this.deck.length; i++) {
         players[i % numPlayers].addToHand(this.deck[i]);
+    }
+}
+
+Deck.getSet = function getSet(set) {
+    if (set === "Low Hearts") {
+        return lowHearts;
+    } else if (set === "Low Diamonds") {
+        return lowDiamonds;
+    } else if (set === "Low Spades") {
+        return lowSpades;
+    } else if (set === "Low Clubs") {
+        return lowClubs;
+    } else if (set === "High Hearts") {
+        return highHearts;
+    } else if (set === "High Diamonds") {
+        return highDiamonds;
+    } else if (set === "High Spades") {
+        return highSpades;
+    } else if (set === "High Clubs") {
+        return highClubs;
+    } else if (set === "Jokers") {
+        return jokers;
     }
 }
 

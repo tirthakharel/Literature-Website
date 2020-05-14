@@ -1,4 +1,4 @@
-import { low, high } from '../constants/constants.js';
+const { low, high } = require('../constants/constants.js');
 
 function Card(rank, suit) {
   this.rank = rank;

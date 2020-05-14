@@ -1,39 +1,31 @@
-import {
-    suits,
-    ranks,
-    sets,
-} from "../constants/constants.js";
+const { suits, ranks, sets } = require('../constants/constants.js');
 
 const Card = require('./Card');
 
 function Deck() {
+  this.deck = [];
 
-    this.deck = [];
-
-    for (let i = 0; i < suits.length; i++) {
-        if (suits[i] == "Joker") {
-            this.deck.push(new Card("Red", suits[i]));
-            this.deck.push(new Card("Black", suits[i]));
-        } else {
-            for (let j = 0; j < ranks.length; j++) {
-                if (ranks[j] != "Red" && ranks[j] != "Black") {
-                    this.deck.push(new Card(ranks[j], suits[i]));
-                }
-            }
+  for (let i = 0; i < suits.length; i++) {
+    if (suits[i] == 'Joker') {
+      this.deck.push(new Card('Red', suits[i]));
+      this.deck.push(new Card('Black', suits[i]));
+    } else {
+      for (let j = 0; j < ranks.length; j++) {
+        if (ranks[j] != 'Red' && ranks[j] != 'Black') {
+          this.deck.push(new Card(ranks[j], suits[i]));
         }
+      }
     }
-        
+  }
 }
 
 Deck.prototype.shuffle = function shuffle() {
-    for (let i = this.deck.length - 1; i > 0; i--) {
-        let j = Math.floor(Math.random() * (i + 1));
-        [this.deck[i], this.deck[j]] = [this.deck[j], this.deck[i]];
-    }
-}
+  for (let i = this.deck.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    [this.deck[i], this.deck[j]] = [this.deck[j], this.deck[i]];
+  }
+};
 
-Deck.prototype.deal = function deal(players) {
-
-}
+Deck.prototype.deal = function deal(players) {};
 
 module.exports = Deck;

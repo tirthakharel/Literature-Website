@@ -41,7 +41,7 @@ Game.prototype.removePlayer = function removePlayer(name) {
 Game.prototype.ask = function ask(sourcePlayerName, targetPlayerName, card) {
   let sourcePlayer = this.playerMap.get(sourcePlayerName);
   let targetPlayer = this.playerMap.get(targetPlayerName);
-  if (sourcePlayer.isTurn) {
+  if (sourcePlayer.isTurn && sourcePlayer.hand.length > 0 && targetPlayerName.hand.length > 0) {
     if (targetPlayer.hasCard(card)) {
       targetPlayer.removeFromHand(card);
       sourcePlayer.addToHand(card);
@@ -56,7 +56,7 @@ Game.prototype.ask = function ask(sourcePlayerName, targetPlayerName, card) {
 
 Game.prototype.declare = function declare(playerName, map, set) {
   let player = this.playerMap.get(playerName);
-  if (player.isTurn) {
+  if (player.isTurn && player.hand.length > 0) {
     for (let [teammate, cards] of map) {
       for (let i = 0; i < cards.length; i++) {
         if (!teammate.hasCard(cards[i])) {

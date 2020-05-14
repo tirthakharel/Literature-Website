@@ -21,7 +21,7 @@ Game.prototype.addPlayer = function addPlayer(name) {
 
 Game.prototype.removePlayer = function removePlayer(name) {
   for (var i = 0; i < this.players.length; i++) {
-    if (this.players[i].name == name) {
+    if (this.players[i].name === name) {
       this.players.splice(i, 1);
     }
   }
@@ -43,6 +43,6 @@ Game.prototype.ask = function ask(sourcePlayer, targetPlayer, card) {
 
 Game.prototype.declare = function declare(player) {
   if (player.isTurn) {
-    
+
   }
 }

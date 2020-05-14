@@ -21,3 +21,9 @@ const server = http.createServer(app);
 const io = socketIO(server);
 
 server.listen(port, () => console.log(`Listening on port ${port}`));
+
+module.exports = {
+  http,
+  io,
+  app,
+};

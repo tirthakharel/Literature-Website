@@ -13,7 +13,7 @@ Player.prototype.addToHand = function addToHand(card) {
 Player.prototype.getSets = function getSets() {
   let Sets = new Set();
   this.hand.forEach((card) => {
-    Sets.add(card.getSet());
+    Sets.add(card.set);
   });
 
   return Sets;

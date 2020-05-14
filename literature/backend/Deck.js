@@ -33,6 +33,14 @@ Deck.prototype.shuffle = function shuffle() {
 }
 
 Deck.prototype.deal = function deal(players) {
+    
+    this.shuffle();
+
+    let numPlayers = players.length;
+    
+    for (let i = 0; i < this.deck.length; i++) {
+        players[i % numPlayers].addToHand(this.deck[i]);
+    }
 
 }
 

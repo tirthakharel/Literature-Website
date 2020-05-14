@@ -23,4 +23,8 @@ Card.prototype.toString = function toString() {
                                  this.rank + ' of ' + this.suit;
 }
 
+Card.prototype.equals = function equals(card) {
+  return this.rank === card.rank && this.suit === card.suit;
+}
+
 module.exports = Card;

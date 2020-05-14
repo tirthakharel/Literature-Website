@@ -25,7 +25,7 @@ Game.prototype.addPlayer = function addPlayer(name) {
 }
 
 Game.prototype.removePlayer = function removePlayer(name) {
-  for (var i = 0; i < this.players.length; i++) {
+  for (let i = 0; i < this.players.length; i++) {
     if (this.players[i].name === name) {
       this.players.splice(i, 1);
     }
@@ -49,13 +49,13 @@ Game.prototype.ask = function ask(sourcePlayer, targetPlayer, card) {
 Game.prototype.declare = function declare(player, map) {
   if (player.isTurn) {
     for (let [player, cards] of map) {
-      for (var i = 0; i < cards.length; i++) {
+      for (let i = 0; i < cards.length; i++) {
         if (!player.hasCard(cards[i])) {
           // incorrect declare
           if (player.team === 0) {
-            this.scoreTeam1 ++;
+            this.scoreTeam1++;
           } else {
-            this.scoreTeam0 ++;
+            this.scoreTeam0++;
           }
           this.deleteCards(map);
           return;
@@ -64,9 +64,9 @@ Game.prototype.declare = function declare(player, map) {
     }
     // correct declare
     if (player.team === 0) {
-      this.scoreTeam0 ++;
+      this.scoreTeam0++;
     } else {
-      this.scoreTeam1 ++;
+      this.scoreTeam1++;
     }
     this.deleteCards(map);
   }
@@ -74,8 +74,8 @@ Game.prototype.declare = function declare(player, map) {
 
 Game.prototype.deleteCards = function deleteCards(map) {
   for (let cards of map.values()) {
-    for (var i = 0; i < cards.length; i++) {
-      for (var j = 0; j < this.players.length; j++) {
+    for (let i = 0; i < cards.length; i++) {
+      for (let j = 0; j < this.players.length; j++) {
         if (this.players[j].hasCard(cards[i])) {
           this.players[j].removeFromHand(cards[i]);
           break;

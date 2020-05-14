@@ -4,6 +4,7 @@ const Deck = require('./deck');
 function Game(io) {
   this.io = io;
   this.players = [];
+  this.playerMap = new Map();
   this.scoreTeam0 = 0;
   this.scoreTeam1 = 0;
 
@@ -20,7 +21,9 @@ Game.prototype.start = function start() {
 }
 
 Game.prototype.addPlayer = function addPlayer(name) {
-  this.players.push(new Player(name));
+  let player = new Player(name);
+  this.players.push(player);
+  this.playerMap.set(name, player);
   if (this.players.length === 1) {
     this.players[0].leader = true;
   }
@@ -30,11 +33,14 @@ Game.prototype.removePlayer = function removePlayer(name) {
   for (let i = 0; i < this.players.length; i++) {
     if (this.players[i].name === name) {
       this.players.splice(i, 1);
+      this.playerMap.remove(name);
     }
   }
 }
 
-Game.prototype.ask = function ask(sourcePlayer, targetPlayer, card) {
+Game.prototype.ask = function ask(sourcePlayerName, targetPlayerName, card) {
+  let sourcePlayer = this.playerMap.get(sourcePlayerName);
+  let targetPlayer = this.playerMap.get(targetPlayerName);
   if (sourcePlayer.isTurn) {
     if (targetPlayer.hasCard(card)) {
       targetPlayer.removeFromHand(card);
@@ -48,11 +54,12 @@ Game.prototype.ask = function ask(sourcePlayer, targetPlayer, card) {
   }
 }
 
-Game.prototype.declare = function declare(player, map, set) {
+Game.prototype.declare = function declare(playerName, map, set) {
+  let player = this.playerMap.get(playerName);
   if (player.isTurn) {
-    for (let [player, cards] of map) {
+    for (let [teammate, cards] of map) {
       for (let i = 0; i < cards.length; i++) {
-        if (!player.hasCard(cards[i])) {
+        if (!teammate.hasCard(cards[i])) {
           // incorrect declare
           if (player.team === 0) {
             this.scoreTeam1++;
@@ -86,7 +93,9 @@ Game.prototype.deleteCards = function deleteCards(set) {
   }
 }
 
-Game.prototype.transfer = function transfer(sourcePlayer, targetPlayer) {
+Game.prototype.transfer = function transfer(sourcePlayerName, targetPlayerName) {
+  let sourcePlayer = this.playerMap.get(sourcePlayerName);
+  let targetPlayer = this.playerMap.get(targetPlayerName);
   if (sourcePlayer.isTurn) {
     sourcePlayer.isTurn = false;
     targetPlayer.isTurn = true;

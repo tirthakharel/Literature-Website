@@ -18,3 +18,5 @@ Player.prototype.getSets = function getSets() {
 
   return Sets;
 };
+
+module.exports = Player;

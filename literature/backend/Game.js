@@ -6,12 +6,14 @@ function Game(io) {
   this.players = [];
   this.scoreTeam0 = 0;
   this.scoreTeam1 = 0;
+
+  this.deck = new Deck();
 }
 
 Game.prototype.start = function start() {
   if (this.players.length === 6 || this.players.length === 8) {
-    Deck.deal(this.players);
-    this.players[1].isTurn = true;
+    this.deck.deal(this.players);
+    this.players[0].isTurn = true;
   } else {
     // show alert (not enough/too many players)
   }
@@ -91,3 +93,5 @@ Game.prototype.transfer = function transfer(sourcePlayer, targetPlayer) {
     targetPlayer.isTurn = true;
   }
 }
+
+module.exports = Game;

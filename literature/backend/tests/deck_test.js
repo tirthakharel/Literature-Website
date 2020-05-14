@@ -1,9 +1,26 @@
 const Deck = require('../Deck.js');
+const Player = require('../Player.js');
+const Game = require('../Game.js')
 
-const testDeck = new Deck();
+let test = new Game('io');
 
-testDeck.shuffle();
+test.addPlayer("p1");
+test.addPlayer("p2");
+test.addPlayer("p3");
+test.addPlayer("p4");
+test.addPlayer("p5");
+test.addPlayer("p6");
 
-console.log(testDeck.deck);
+test.start();
 
-console.log('whats up');
+for (let i = 0; i < test.players.length; i++) {
+    console.log(test.players[i].hand);   
+}
+
+//const testDeck = new Deck();
+
+// testDeck.shuffle();
+
+// console.log(testDeck.deck);
+
+//console.log('whats up');

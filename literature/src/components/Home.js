@@ -1,10 +1,11 @@
 import React from 'react';
-import { Row, Col, Collapse } from 'antd';
+import { Row, Col, Collapse, Tabs } from 'antd';
 import 'antd/dist/antd.css';
 import '../style/Home.css'
 import GameForm from './GameForm.js'
 
 const { Panel } = Collapse;
+const { TabPane } = Tabs;
 
 export default class Home extends React.Component {
   constructor(props) {
@@ -18,7 +19,14 @@ export default class Home extends React.Component {
   render() {
     return <Row className="bg" justify="start">
       <Col span={12}>
-      
+        <Tabs defaultActiveKey="1">
+          <TabPane tab="Join Game" key="1">
+            
+          </TabPane>
+          <TabPane tab="Create Game" key="2">
+            
+          </TabPane>
+        </Tabs>
       </Col>
       <Col span={12}>
         <h1>How To Play</h1> 

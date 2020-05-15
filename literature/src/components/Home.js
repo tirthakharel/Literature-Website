@@ -19,14 +19,19 @@ export default class Home extends React.Component {
   render() {
     return <Row className="bg" justify="start">
       <Col span={12}>
+        <Row
+          align="middle"
+          justify="center"
+          >
         <Tabs defaultActiveKey="1">
           <TabPane tab="Join Game" key="1">
-            
+            <GameForm />
           </TabPane>
           <TabPane tab="Create Game" key="2">
-            
+            <GameForm />
           </TabPane>
         </Tabs>
+        </Row>
       </Col>
       <Col span={12}>
         <h1>How To Play</h1> 

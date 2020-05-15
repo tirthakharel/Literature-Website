@@ -1,29 +1,12 @@
 import React from 'react';
-import { Tabs, Form, Input, Button } from 'antd';
+import { Form, Input, Button } from 'antd';
 import "antd/dist/antd.css";
-
-const { TabPane } = Tabs;
-const layout = {
-  labelCol: {
-    span: 3,
-  },
-  wrapperCol: {
-    span: 10,
-  },
-};
-const tailLayout = {
-  wrapperCol: {
-    offset: 8,
-    span: 16,
-  },
-};
 
 export default class GameForm extends React.Component {
 
   render() {
     return (
       <Form
-        {...layout}
         name="basic"
         initialValues={{
           remember: true,
@@ -55,7 +38,7 @@ export default class GameForm extends React.Component {
           <Input />
         </Form.Item>
 
-        <Form.Item {...tailLayout}>
+        <Form.Item>
           <Button type="primary" htmlType="submit">
             Join Game
           </Button>

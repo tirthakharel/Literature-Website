@@ -1,4 +1,5 @@
 import React from 'react';
+import GameForm from './GameForm.js';
 
 export default class Home extends React.Component {
   constructor(props) {
@@ -10,6 +11,6 @@ export default class Home extends React.Component {
   }
 
   render() {
-    return <div>What's good nig</div>;
+    return <GameForm />;
   }
 }

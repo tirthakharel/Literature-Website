@@ -3,6 +3,7 @@ import { Row, Col, Collapse, Tabs } from 'antd';
 import 'antd/dist/antd.css';
 import '../style/Home.css';
 import GameForm from './GameForm.js';
+import logo from '../lit-logo.png';
 
 const { Panel } = Collapse;
 const { TabPane } = Tabs;
@@ -24,9 +25,32 @@ export default class Home extends React.Component {
         justify="center"
         style={{ flexDirection: 'column' }}
       >
+        <img
+          src={logo}
+          alt="Literature logo"
+          style={{ marginTop: '15vh', marginBottom: '10vh' }}
+          width="750px"
+        />
         <Row style={{ width: '100%' }}>
-          <Col span={8} offset={4} style={{ height: '100vh' }}>
-            <Row align="middle" justify="center" style={{ height: '100%' }}>
+          <Col
+            style={{
+              border: '1px solid black',
+              marginRight: '10px',
+              borderRadius: '10px',
+              height: '400px',
+              paddingTop: '25px',
+              boxShadow: '0px 6px 15px 0px #8e8e8e',
+              backgroundColor: '#ffffff',
+            }}
+            span={6}
+            offset={6}
+          >
+            <Row
+              justify="center"
+              align="middle"
+              style={{ flexDirection: 'column' }}
+            >
+              <h1 style={{ textAlign: 'center' }}>Hi!</h1>
               <Tabs defaultActiveKey="1" style={{ width: '75%' }}>
                 <TabPane tab="Join Game" key="1">
                   {<GameForm />}
@@ -37,30 +61,37 @@ export default class Home extends React.Component {
               </Tabs>
             </Row>
           </Col>
-          <Col span={8} style={{ height: '100vh' }}>
+          <Col
+            span={6}
+            style={{
+              border: '1px solid black',
+              borderRadius: '10px',
+              marginLeft: '10px',
+              height: '400px',
+              paddingTop: '25px',
+              boxShadow: '0px 6px 15px 0px #8e8e8e',
+              backgroundColor: '#ffffff',
+            }}
+          >
             <Row
-              align="middle"
               justify="center"
+              align="middle"
               style={{
                 flexDirection: 'column',
-                height: '100%',
               }}
             >
               <h1 style={{ textAlign: 'center' }}>How To Play</h1>
-              <Collapse id="collapse" style={{ width: '80%' }} accordion>
-                <Panel header="This is panel header 1" key="1">
-                  <p>{'hi'}</p>
-                </Panel>
-                <Panel header="This is panel header 2" key="2">
-                  <p>{'hi'}</p>
-                </Panel>
-                <Panel header="This is panel header 3" key="3">
-                  <p>{'hi'}</p>
-                </Panel>
-              </Collapse>
+              <Tabs defaultActiveKey="1" style={{ width: '75%' }}>
+                <TabPane tab="How To Play" key="1">
+                  these are soem
+                </TabPane>
+                <TabPane tab="2" key="2">
+                  instructions
+                </TabPane>
+              </Tabs>
             </Row>
           </Col>
-          <Col span={4} />
+          <Col span={6} />
         </Row>
       </Row>
     );

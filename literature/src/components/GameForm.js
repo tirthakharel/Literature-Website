@@ -2,14 +2,34 @@ import React from 'react';
 import { Form, Input, Button } from 'antd';
 import "antd/dist/antd.css";
 
+const layout = {
+  labelCol: {
+    span: 8,
+  },
+  wrapperCol: {
+    span: 16,
+  },
+};
+
+const tailLayout = {
+  wrapperCol: {
+    offset: 9,
+    span: 15,
+  },
+};
+
 export default class GameForm extends React.Component {
 
   render() {
     return (
       <Form
+        {...layout}
         name="basic"
         initialValues={{
           remember: true,
+        }}
+        style={{
+          align: "left !important",
         }}
       >
         <Form.Item
@@ -38,7 +58,7 @@ export default class GameForm extends React.Component {
           <Input />
         </Form.Item>
 
-        <Form.Item>
+        <Form.Item {...tailLayout}>
           <Button type="primary" htmlType="submit">
             Join Game
           </Button>

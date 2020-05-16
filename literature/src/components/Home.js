@@ -23,23 +23,20 @@ export default class Home extends React.Component {
         className="bg"
         align="middle"
         justify="center"
-        style={{ flexDirection: 'column' }}
       >
         <img
           src={logo}
-          alt="Literature logo"
+          alt="Literature Logo"
           style={{ marginTop: '10vh', marginBottom: '10vh' }}
           width="550px"
         />
         <Row style={{ width: '100%' }}>
-          <Col
+          <Col 
+            className="panel"
             style={{
               marginRight: '10px',
-              borderRadius: '10px',
               height: '400px',
               paddingTop: '25px',
-              boxShadow: '0px 6px 15px 0px #8e8e8e',
-              backgroundColor: '#ffffff',
             }}
             span={6}
             offset={6}
@@ -62,15 +59,13 @@ export default class Home extends React.Component {
               </Tabs>
             </Row>
           </Col>
-          <Col
+          <Col 
+            className="panel"
             span={6}
             style={{
-              borderRadius: '10px',
               marginLeft: '10px',
               height: '400px',
               paddingTop: '25px',
-              boxShadow: '0px 6px 15px 0px #8e8e8e',
-              backgroundColor: '#ffffff',
             }}
           >
             <Row
@@ -85,7 +80,7 @@ export default class Home extends React.Component {
                 style={{ width: '75%', marginTop: '10%' }}
               >
                 <TabPane tab="How To Play" key="1">
-                  these are soem
+                  These are some
                 </TabPane>
                 <TabPane tab="2" key="2">
                   instructions

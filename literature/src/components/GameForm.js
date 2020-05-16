@@ -57,7 +57,7 @@ export default class GameForm extends React.Component {
         </Form.Item>
 
         <Form.Item
-          style={{ width: '50%', marginLeft: 'auto', marginRight: 'auto' }}
+          style={{ width: '75%', marginLeft: 'auto', marginRight: 'auto' }}
         >
           <Button style={{ width: '100%' }} type="primary" htmlType="submit">
             {this.props.text}

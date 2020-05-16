@@ -28,9 +28,6 @@ export default class GameForm extends React.Component {
         initialValues={{
           remember: true,
         }}
-        style={{
-          align: "left !important",
-        }}
       >
         <Form.Item
           label="Name"

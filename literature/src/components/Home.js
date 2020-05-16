@@ -19,76 +19,59 @@ export default class Home extends React.Component {
 
   render() {
     return (
-      <Row
-        className="bg"
-        align="middle"
-        justify="center"
-      >
+      <Row className="bg" align="middle" justify="center">
         <img
+          className="homeImg"
           src={logo}
           alt="Literature Logo"
           style={{ marginTop: '10vh', marginBottom: '10vh' }}
           width="550px"
         />
         <Row style={{ width: '100%' }}>
-          <Col 
-            className="panel"
-            style={{
-              marginRight: '10px',
-              height: '400px',
-              paddingTop: '25px',
-            }}
-            span={6}
-            offset={6}
-          >
-            <Row
-              justify="center"
-              align="middle"
-              style={{ flexDirection: 'column' }}
-            >
-              <Tabs
-                defaultActiveKey="1"
-                style={{ width: '75%', marginTop: '10%' }}
+          <Col className="homeCol" sm={12} align="right">
+            <div align="left" className="panel homePanel">
+              <Row
+                justify="center"
+                align="middle"
+                style={{ flexDirection: 'column' }}
               >
-                <TabPane tab="Join Game" key="1">
-                  {<GameForm text="Join Game" />}
-                </TabPane>
-                <TabPane tab="Create Game" key="2">
-                  {<GameForm text="Create Game" />}
-                </TabPane>
-              </Tabs>
-            </Row>
+                <Tabs
+                  defaultActiveKey="1"
+                  style={{ width: '75%', marginTop: '10%' }}
+                >
+                  <TabPane tab="Join Game" key="1">
+                    {<GameForm text="Join Game" />}
+                  </TabPane>
+                  <TabPane tab="Create Game" key="2">
+                    {<GameForm text="Create Game" />}
+                  </TabPane>
+                </Tabs>
+              </Row>
+              </div>
           </Col>
-          <Col 
-            className="panel"
-            span={6}
-            style={{
-              marginLeft: '10px',
-              height: '400px',
-              paddingTop: '25px',
-            }}
-          >
-            <Row
-              justify="center"
-              align="middle"
-              style={{
-                flexDirection: 'column',
-              }}
-            >
-              <Tabs
-                defaultActiveKey="1"
-                style={{ width: '75%', marginTop: '10%' }}
+          <Col className="homeCol" sm={12}>
+            <div class="panel homePanel">
+              <Row
+                justify="center"
+                align="middle"
+                style={{
+                  flexDirection: 'column',
+                }}
               >
-                <TabPane tab="How To Play" key="1">
-                  These are some
-                </TabPane>
-                <TabPane tab="2" key="2">
-                  instructions
-                </TabPane>
-              </Tabs>
-            </Row>
+                <Tabs
+                  defaultActiveKey="1"
+                  style={{ width: '75%', marginTop: '10%' }}
+                >
+                  <TabPane tab="How To Play" key="1">
+                    These are some
+                  </TabPane>
+                  <TabPane tab="2" key="2">
+                    instructions
+                  </TabPane>
+                </Tabs>
+              </Row>
+            </div>
           </Col>
-          <Col span={6} />
         </Row>
       </Row>
     );

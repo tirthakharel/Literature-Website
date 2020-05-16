@@ -4,13 +4,6 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import '../style/Home.css';
 import 'antd/dist/antd.css';
 
-const tailLayout = {
-  wrapperCol: {
-    offset: 7,
-    span: 14,
-  },
-};
-
 export default class GameForm extends React.Component {
   render() {
     return (

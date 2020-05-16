@@ -2,9 +2,9 @@ import React from 'react';
 import { Row, Col, Collapse, Tabs } from 'antd';
 import 'antd/dist/antd.css';
 import '../style/Home.css';
-import GameForm from './GameForm.js';
 import logo from '../lit-logo.png';
 import { List, Avatar } from 'antd';
+import TeamInfo from './TeamInfo.js'
 
 const teamOneData = [
   {
@@ -71,104 +71,12 @@ export default class Game extends React.Component {
               display: 'flex',
               flexDirection: 'column',
             }}
-            span={5}
+            lg={5} xs={6}
           >
-            <Row
-              style={{
-                flex: '1',
-                borderRadius: '10px',
-                boxShadow: '0px 6px 15px 0px #8e8e8e',
-                backgroundColor: '#ffffff',
-                marginBottom: '20px',
-              }}
-            >
-              <div
-                style={{
-                  width: '100%',
-                  padding: '15px 15px 0 15px',
-                  height: '20%',
-                }}
-              >
-                <div style={{ float: 'left', fontSize: '2em' }}>Team One</div>
-                <div style={{ float: 'right', fontSize: '2em' }}>0</div>
-              </div>
-              <div style={{ width: '100%', height: '80%', padding: '15px' }}>
-                <List
-                  itemLayout="horizontal"
-                  dataSource={teamOneData}
-                  style={{ width: '100%', padding: '0 10px' }}
-                  renderItem={(item) => (
-                    <List.Item style={{ padding: '3px 0' }}>
-                      <List.Item.Meta
-                        title={<a href="https://ant.design">{item.name}</a>}
-                      />
-                      <div style={{ position: 'relative', bottom: '2px' }}>
-                        {item.numCards}
-                      </div>
-                    </List.Item>
-                  )}
-                />
-                <div
-                  style={{
-                    width: '100%',
-                    display: 'block',
-                    fontSize: '1em',
-                    padding: '10px',
-                  }}
-                >
-                  Declared sets
-                </div>
-              </div>
-            </Row>
-            <Row
-              justify="center"
-              style={{
-                flex: '1',
-                borderRadius: '10px',
-                boxShadow: '0px 6px 15px 0px #8e8e8e',
-                backgroundColor: '#ffffff',
-              }}
-            >
-              <div
-                style={{
-                  width: '100%',
-                  padding: '15px 15px 0 15px',
-                  height: '20%',
-                }}
-              >
-                <div style={{ float: 'left', fontSize: '2em' }}>Team Two</div>
-                <div style={{ float: 'right', fontSize: '2em' }}>0</div>
-              </div>
-              <div style={{ width: '100%', height: '80%', padding: '15px' }}>
-                <List
-                  itemLayout="horizontal"
-                  dataSource={teamTwoData}
-                  style={{ width: '100%', padding: '0 10px' }}
-                  renderItem={(item) => (
-                    <List.Item style={{ padding: '3px 0' }}>
-                      <List.Item.Meta
-                        title={<a href="https://ant.design">{item.name}</a>}
-                      />
-                      <div style={{ position: 'relative', bottom: '2px' }}>
-                        {item.numCards}
-                      </div>
-                    </List.Item>
-                  )}
-                />
-                <div
-                  style={{
-                    width: '100%',
-                    display: 'block',
-                    fontSize: '1em',
-                    padding: '10px',
-                  }}
-                >
-                  Declared sets
-                </div>
-              </div>
-            </Row>
+            <TeamInfo name="Team One" score={0} data={teamOneData} />
+            <TeamInfo name="Team Two" score={0} data={teamTwoData} />
           </Col>
-          <Col span={17} style={{ marginLeft: '30px' }}>
+          <Col lg={17} xs={16} style={{ marginLeft: '30px' }}>
             <Row
               justify="center"
               align="middle"

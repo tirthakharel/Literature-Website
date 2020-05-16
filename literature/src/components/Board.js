@@ -3,7 +3,7 @@ import { Row, Col } from 'antd';
 import 'antd/dist/antd.css';
 import '../style/Home.css';
 
-export default class Game extends React.Component {
+export default class Board extends React.Component {
   constructor(props) {
     super(props);
 
@@ -13,6 +13,6 @@ export default class Game extends React.Component {
   }
 
   render() {
-    return <Row className="bg"></Row>;
+    return <Row></Row>;
   }
 }

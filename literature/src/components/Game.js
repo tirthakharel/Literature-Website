@@ -6,18 +6,40 @@ import GameForm from './GameForm.js';
 import logo from '../lit-logo.png';
 import { List, Avatar } from 'antd';
 
-const data = [
+const teamOneData = [
   {
-    title: 'Ant Design Title 1',
+    name: 'Praneeth',
+    numCards: 9
   },
   {
-    title: 'Ant Design Title 2',
+    name: 'Ishaan',
+    numCards: 9
   },
   {
-    title: 'Ant Design Title 3',
+    name: 'Tirtha',
+    numCards: 9
   },
   {
-    title: 'Ant Design Title 4',
+    name: 'Ashwin',
+    numCards: 9
+  },
+];
+const teamTwoData = [
+  {
+    name: 'Aditya',
+    numCards: 9
+  },
+  {
+    name: 'Rahul',
+    numCards: 9
+  },
+  {
+    name: 'Arjun',
+    numCards: 9
+  },
+  {
+    name: 'Ritvik',
+    numCards: 9
   },
 ];
 const { Panel } = Collapse;
@@ -70,18 +92,18 @@ export default class Game extends React.Component {
                 <div style={{ float: 'left', fontSize: '2em' }}>Team One</div>
                 <div style={{ float: 'right', fontSize: '2em' }}>0</div>
               </div>
-              <div style={{ width: '100%', height: '80%' }}>
+              <div style={{ width: '100%', height: '80%', padding: '15px' }}>
                 <List
                   itemLayout="horizontal"
-                  dataSource={data}
+                  dataSource={teamOneData}
                   style={{ width: '100%', padding: '0 10px' }}
                   renderItem={(item) => (
                     <List.Item style={{ padding: '3px 0' }}>
                       <List.Item.Meta
-                        title={<a href="https://ant.design">{item.title}</a>}
+                        title={<a href="https://ant.design">{item.name}</a>}
                       />
                       <div style={{ position: 'relative', bottom: '2px' }}>
-                        Content
+                        {item.numCards}
                       </div>
                     </List.Item>
                   )}
@@ -107,9 +129,42 @@ export default class Game extends React.Component {
                 backgroundColor: '#ffffff',
               }}
             >
-              <div style={{ width: '100%', padding: '15px' }}>
-                <span style={{ float: 'left', fontSize: '2em' }}>Team Two</span>
-                <span style={{ float: 'right', fontSize: '2em' }}>0</span>
+              <div
+                style={{
+                  width: '100%',
+                  padding: '15px 15px 0 15px',
+                  height: '20%',
+                }}
+              >
+                <div style={{ float: 'left', fontSize: '2em' }}>Team Two</div>
+                <div style={{ float: 'right', fontSize: '2em' }}>0</div>
+              </div>
+              <div style={{ width: '100%', height: '80%', padding: '15px' }}>
+                <List
+                  itemLayout="horizontal"
+                  dataSource={teamTwoData}
+                  style={{ width: '100%', padding: '0 10px' }}
+                  renderItem={(item) => (
+                    <List.Item style={{ padding: '3px 0' }}>
+                      <List.Item.Meta
+                        title={<a href="https://ant.design">{item.name}</a>}
+                      />
+                      <div style={{ position: 'relative', bottom: '2px' }}>
+                        {item.numCards}
+                      </div>
+                    </List.Item>
+                  )}
+                />
+                <div
+                  style={{
+                    width: '100%',
+                    display: 'block',
+                    fontSize: '1em',
+                    padding: '10px',
+                  }}
+                >
+                  Declared sets
+                </div>
               </div>
             </Row>
           </Col>

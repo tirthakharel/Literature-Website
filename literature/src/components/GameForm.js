@@ -1,37 +1,30 @@
 import React from 'react';
 import { Form, Input, Button } from 'antd';
-import "antd/dist/antd.css";
-
-const layout = {
-  labelCol: {
-    span: 8,
-  },
-  wrapperCol: {
-    span: 16,
-  },
-};
+import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import '../style/Home.css';
+import 'antd/dist/antd.css';
 
 const tailLayout = {
   wrapperCol: {
-    offset: 9,
-    span: 15,
+    offset: 7,
+    span: 14,
   },
 };
 
 export default class GameForm extends React.Component {
-
   render() {
     return (
       <Form
-        {...layout}
         name="basic"
         initialValues={{
           remember: true,
         }}
+        size="large"
       >
         <Form.Item
-          label="Name"
+          placeholder="Name"
           name="name"
+          style={{ textAlign: 'left !important' }}
           rules={[
             {
               required: true,
@@ -39,11 +32,18 @@ export default class GameForm extends React.Component {
             },
           ]}
         >
-          <Input />
+          <Input
+            prefix={
+              <UserOutlined
+                className="site-form-item-icon"
+                style={{ marginRight: '8px' }}
+              />
+            }
+            placeholder="Name"
+          />
         </Form.Item>
 
         <Form.Item
-          label="Game Code"
           name="gameCode"
           rules={[
             {
@@ -52,15 +52,25 @@ export default class GameForm extends React.Component {
             },
           ]}
         >
-          <Input />
+          <Input
+            prefix={
+              <LockOutlined
+                className="site-form-item-icon"
+                style={{ marginRight: '8px' }}
+              />
+            }
+            placeholder="Game Code"
+          />
         </Form.Item>
 
-        <Form.Item {...tailLayout}>
-          <Button type="primary" htmlType="submit">
-            Join Game
+        <Form.Item
+          style={{ width: '50%', marginLeft: 'auto', marginRight: 'auto' }}
+        >
+          <Button style={{ width: '100%' }} type="primary" htmlType="submit">
+            {this.props.text}
           </Button>
         </Form.Item>
       </Form>
-      );
+    );
   }
 }

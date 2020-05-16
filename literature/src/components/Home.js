@@ -28,13 +28,12 @@ export default class Home extends React.Component {
         <img
           src={logo}
           alt="Literature logo"
-          style={{ marginTop: '15vh', marginBottom: '10vh' }}
-          width="750px"
+          style={{ marginTop: '10vh', marginBottom: '10vh' }}
+          width="550px"
         />
         <Row style={{ width: '100%' }}>
           <Col
             style={{
-              border: '1px solid black',
               marginRight: '10px',
               borderRadius: '10px',
               height: '400px',
@@ -50,13 +49,15 @@ export default class Home extends React.Component {
               align="middle"
               style={{ flexDirection: 'column' }}
             >
-              <h1 style={{ textAlign: 'center' }}>Hi!</h1>
-              <Tabs defaultActiveKey="1" style={{ width: '75%' }}>
+              <Tabs
+                defaultActiveKey="1"
+                style={{ width: '75%', marginTop: '10%' }}
+              >
                 <TabPane tab="Join Game" key="1">
-                  {<GameForm />}
+                  {<GameForm text="Join Game" />}
                 </TabPane>
                 <TabPane tab="Create Game" key="2">
-                  {<GameForm />}
+                  {<GameForm text="Create Game" />}
                 </TabPane>
               </Tabs>
             </Row>
@@ -64,7 +65,6 @@ export default class Home extends React.Component {
           <Col
             span={6}
             style={{
-              border: '1px solid black',
               borderRadius: '10px',
               marginLeft: '10px',
               height: '400px',
@@ -80,8 +80,10 @@ export default class Home extends React.Component {
                 flexDirection: 'column',
               }}
             >
-              <h1 style={{ textAlign: 'center' }}>How To Play</h1>
-              <Tabs defaultActiveKey="1" style={{ width: '75%' }}>
+              <Tabs
+                defaultActiveKey="1"
+                style={{ width: '75%', marginTop: '10%' }}
+              >
                 <TabPane tab="How To Play" key="1">
                   these are soem
                 </TabPane>

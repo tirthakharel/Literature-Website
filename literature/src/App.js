@@ -7,7 +7,7 @@ import './App.css';
 function App() {
   return (
     <div className="background">
-      <Game />
+      <Home />
     </div>
   );
 }

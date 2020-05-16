@@ -62,11 +62,11 @@ export default class Game extends React.Component {
           width="200px"
         />
         <Row className="gameRow">
-          <Col className="teamCol" lg={5} xs={6}>
+          <Col className="teamCol" lg={5} md={6}>
             <TeamInfo name="Team One" score={0} data={teamOneData} />
             <TeamInfo name="Team Two" score={0} data={teamTwoData} />
           </Col>
-          <Col lg={17} xs={16} className="gameCol">
+          <Col lg={17} md={16} className="gameCol">
             <Row 
               className="panel gamePanel"
               justify="center"

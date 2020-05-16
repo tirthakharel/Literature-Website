@@ -17,6 +17,9 @@
   display: flex;
   flex-direction: column;
 }
+.teamCol > :first-child {
+  margin-bottom: 20px;
+}
 .gameRow .gameCol {
   margin-left: 30px;
 }
@@ -29,7 +32,6 @@
 
 .teamPanel {
   flex: 1;
-  margin-bottom: 20px;
   height: 50%;
 }
 .teamPanel > .teamHeader {
@@ -59,3 +61,25 @@
   font-size: 1em;
 }
 
+
+@media (max-width: 767px) {
+  .teamCol {
+    display: inline !important;
+    width: 100%;
+    height: 40vh !important;
+    margin: 0 30px;
+  }
+  .teamPanel {
+    display: inline-flex !important;
+    width: 48%;
+    height: 100%
+  }
+  .teamPanel:first-child {
+    margin-right: 4%;
+  }
+  .gameCol {
+    width: 100%;
+    margin: 20px 30px;
+    height: 40vh;
+  }
+}

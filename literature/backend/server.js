@@ -31,7 +31,7 @@ io.on("connection", (socket) => {
   socket.on('join', ({ name, room }, callback) => {
     let roomFound = false;
     for (let i = 0; i < games.length; i++) {
-      if (games[i].roomName === room) {
+      if (games[i].code === room) {
         roomFound = true;
         connectionGame = games[i];
 
@@ -41,7 +41,7 @@ io.on("connection", (socket) => {
 
         if (error) return callback(error);
         socket.join(room);
-        console.log(connectionGame.players);
+        io.to(room).emit('gameData', { code: connectionGame.room, players: connectionGame.players });
         callback();
       }
     }
@@ -52,7 +52,7 @@ io.on("connection", (socket) => {
 
   socket.on('create', ({ name, room }, callback) => {
     for (let i = 0; i < games.length; i++) {
-      if (games[i].roomName === room) {
+      if (games[i].code === room) {
         return callback("The game code already exists");
       }
     }
@@ -66,7 +66,7 @@ io.on("connection", (socket) => {
     games.push(game);
 
     socket.join(room);
-    console.log(connectionGame.players);
+    io.to(room).emit('gameData', { code: connectionGame.room, players: connectionGame.players });
     callback();
   });
 
@@ -77,6 +77,16 @@ io.on("connection", (socket) => {
         console.log(connectionPlayer.name + " disconnected");
       } else {
         connectionGame.removePlayer(connectionPlayer.name);
+        io.to(connectionGame.code).emit('gameData', { code: connectionGame.room, players: connectionGame.players })
+       
+        // remove the game if there are no players
+        if (connectionGame.players.length === 0) {
+          for (let i = 0; i < games.length; i++) {
+            if (games[i].code === connectionGame.code) {
+              games.splice(i, 1);
+            }
+          }
+        }
       }
     }
   });

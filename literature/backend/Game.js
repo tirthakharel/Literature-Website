@@ -1,8 +1,8 @@
 const Player = require('./player');
 const Deck = require('./deck');
 
-function Game(io, roomName) {
-  this.roomName = roomName;
+function Game(io, code) {
+  this.code = code;
   this.io = io;
   this.players = [];
   this.playerMap = new Map();

@@ -4,10 +4,6 @@ import 'antd/dist/antd.css';
 import '../style/Home.css';
 import GameForm from './GameForm.js';
 import logo from '../lit-logo.png';
-import io from "socket.io-client";
-
-const connection = process.env.NODE_ENV === 'development' ?
-  'http://localhost:5000' : undefined;
 
 const { Panel } = Collapse;
 const { TabPane } = Tabs;
@@ -19,10 +15,6 @@ export default class Home extends React.Component {
     this.state = {
       play: false,
     };
-  }
-
-  componentWillMount() {
-    this.socket = io(connection);
   }
 
   render() {
@@ -48,10 +40,10 @@ export default class Home extends React.Component {
                   style={{ width: '75%', marginTop: '10%' }}
                 >
                   <TabPane tab="Join Game" key="1">
-                    {<GameForm play={this.props.play} text="Join Game" socket={this.socket} />}
+                    {<GameForm assign={this.props.assign} text="Join Game" socket={this.props.socket} />}
                   </TabPane>
                   <TabPane tab="Create Game" key="2">
-                    {<GameForm play={this.props.play} text="Create Game" socket={this.socket} />}
+                    {<GameForm assign={this.props.assign} text="Create Game" socket={this.props.socket} />}
                   </TabPane>
                 </Tabs>
               </Row>

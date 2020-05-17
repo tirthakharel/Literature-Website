@@ -14,7 +14,7 @@ export default class GameForm extends React.Component {
         if (error) {
           alert(error);
         } else {
-          this.props.play();
+          this.props.assign();
         }
       });
     } else if (this.props.text === "Create Game") {
@@ -22,7 +22,7 @@ export default class GameForm extends React.Component {
         if (error) {
           alert(error);
         } else {
-          this.props.play();
+          this.props.assign();
         }
       });
     }

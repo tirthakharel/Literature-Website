@@ -5,6 +5,29 @@ import '../style/Home.css';
 import 'antd/dist/antd.css';
 
 export default class GameForm extends React.Component {
+
+  onFinish = values => {
+    let name = values.name;
+    let room = values.gameCode;
+    if (this.props.text === "Join Game") {
+      this.props.socket.emit('join', { name, room }, (error) => {
+        if (error) {
+          alert(error);
+        } else {
+          this.props.assign();
+        }
+      });
+    } else if (this.props.text === "Create Game") {
+      this.props.socket.emit('create', { name, room }, (error) => {
+        if (error) {
+          alert(error);
+        } else {
+          this.props.assign();
+        }
+      });
+    }
+  }
+
   render() {
     return (
       <Form
@@ -13,6 +36,7 @@ export default class GameForm extends React.Component {
           remember: true,
         }}
         size="large"
+        onFinish={this.onFinish}
       >
         <Form.Item
           placeholder="Name"

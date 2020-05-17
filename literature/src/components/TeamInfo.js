@@ -4,17 +4,28 @@ import '../style/Home.css';
 import 'antd/dist/antd.css';
 
 export default class TeamInfo extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      name: this.props.name,
+      scrore: this.props.score,
+      data: this.props.data
+    }
+  }
+
   render() {
     return (
       <Row className="panel teamPanel">
         <div className="teamHeader">
-          <div>{this.props.name}</div>
-          <div>{this.props.score}</div>
+          <div>{this.state.name}</div>
+          <div>{this.state.score}</div>
         </div>
         <div className="members">
           <List
             itemLayout="horizontal"
-            dataSource={this.props.data}
+            dataSource={this.state.data}
             renderItem={(item) => (
               <List.Item>
                 <List.Item.Meta title={item.name} />

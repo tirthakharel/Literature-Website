@@ -1,9 +1,9 @@
 const Deck = require('./Deck.js');
 
-function Player(name) {
+function Player(id, name) {
   this.hand = [];
   this.name = name;
-  this.id = null;
+  this.id = id;
   this.team = null;
   this.leader = false;
   this.isTurn = false;

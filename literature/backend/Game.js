@@ -1,7 +1,8 @@
 const Player = require('./player');
 const Deck = require('./deck');
 
-function Game(io) {
+function Game(io, roomName) {
+  this.roomName = roomName;
   this.io = io;
   this.players = [];
   this.playerMap = new Map();
@@ -20,13 +21,22 @@ Game.prototype.start = function start() {
   }
 }
 
-Game.prototype.addPlayer = function addPlayer(name) {
-  let player = new Player(name);
+Game.prototype.addPlayer = function addPlayer(id, name) {
+  for (let i = 0; i < this.players.length; i++) {
+    if (this.players[i].id === id) {
+      return { error: 'You have already joined this game' };
+    }
+    if (this.players[i].name === name) {
+      return { error: 'There is already a player with this name' };
+    }
+  }
+  let player = new Player(id, name);
   this.players.push(player);
   this.playerMap.set(name, player);
   if (this.players.length === 1) {
     this.players[0].leader = true;
   }
+  return player;
 }
 
 Game.prototype.removePlayer = function removePlayer(name) {

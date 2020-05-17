@@ -1,0 +1,32 @@
+.cardwrapper {
+  width: 100px;
+  margin-bottom: 5px;
+}
+
+.cardwrapper:not(:last-child) {
+  margin-right: 5px;
+}
+
+.cardrow {
+  padding: 0 5px;
+  justify-content: center;
+  max-height: 335px;
+  overflow-y: scroll;
+}
+
+.cardrow::-webkit-scrollbar {
+  width: 0 !important;
+}
+
+@media (max-width: 767px) {
+  .cardrow {
+    padding: 0 5px;
+    justify-content: center;
+    max-height: 150px;
+    overflow-y: scroll;
+  }
+
+  .cardrow::-webkit-scrollbar {
+    width: 0 !important;
+  }
+}

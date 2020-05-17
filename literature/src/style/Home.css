@@ -32,7 +32,7 @@
 }
 .gameCol .gamePanel {
   flex: 1;
-  padding-top: 25px;
+  padding-top: 10px;
   margin-bottom: 20px;
   height: 100%;
 }
@@ -68,18 +68,36 @@
   font-size: 1em;
 }
 
+.buttonrow > button {
+  width: 150px;
+  text-align: center;
+  border-radius: 7.5px;
+}
+
+.buttonrow > button:not(:last-child) {
+  margin-right: 20px;
+}
+
+.log {
+  margin-bottom: 5%;
+  text-align: center;
+}
+
+.buttonrow {
+  margin-top: 5%;
+}
 
 @media (max-width: 767px) {
   .teamCol {
     display: inline !important;
     width: 100%;
-    height: 40vh !important;
+    height: 35vh !important;
     margin: 0 30px;
   }
   .teamPanel {
     display: inline-flex !important;
     width: 48%;
-    height: 100%
+    height: 100%;
   }
   .teamPanel:first-child {
     margin-right: 4%;
@@ -87,7 +105,7 @@
   .gameCol {
     width: 100%;
     margin: 20px 30px;
-    height: 40vh;
+    height: 47vh;
   }
   .homePanel {
     width: 275px;
@@ -99,7 +117,7 @@
     margin: 0px 5% 20px 5%;
   }
   .homeCol {
-    width: 100%
+    width: 100%;
   }
   .homeImg {
     width: 80vw;

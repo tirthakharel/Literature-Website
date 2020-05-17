@@ -2,6 +2,7 @@ import React from 'react';
 import { Row, List } from 'antd';
 import '../style/Home.css';
 import 'antd/dist/antd.css';
+const icons = require.context('../resources/icons');
 
 export default class TeamInfo extends React.Component {
 
@@ -36,7 +37,12 @@ export default class TeamInfo extends React.Component {
             )}
           />
           <div className="declared-sets">
-            Declared sets
+            <img
+              src={icons(`./low_clubs.svg`)}
+              width="40px"
+              alt="declared set"
+            />
+            <img src={icons(`./jokers.svg`)} width="40px" alt="declared set" />
           </div>
         </div>
       </Row>

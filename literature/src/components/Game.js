@@ -1,45 +1,51 @@
 import React from 'react';
-import { Row, Col } from 'antd';
+import { Row, Col, Button } from 'antd';
+import {
+  QuestionCircleOutlined,
+  BellOutlined,
+  SwapOutlined,
+  QuestionOutlined,
+} from '@ant-design/icons';
 import 'antd/dist/antd.css';
 import '../style/Home.css';
 import logo from '../lit-logo.png';
-import { List, Avatar } from 'antd';
-import TeamInfo from './TeamInfo.js'
+import TeamInfo from './TeamInfo.js';
+import Board from './Board';
 
 const teamOneData = [
   {
     name: 'Praneeth',
-    numCards: 9
+    numCards: 9,
   },
   {
     name: 'Ishaan',
-    numCards: 9
+    numCards: 9,
   },
   {
     name: 'Tirtha',
-    numCards: 9
+    numCards: 9,
   },
   {
     name: 'Ashwin',
-    numCards: 9
+    numCards: 9,
   },
 ];
 const teamTwoData = [
   {
     name: 'Aditya',
-    numCards: 9
+    numCards: 9,
   },
   {
     name: 'Rahul',
-    numCards: 9
+    numCards: 9,
   },
   {
     name: 'Arjun',
-    numCards: 9
+    numCards: 9,
   },
   {
     name: 'Ritvik',
-    numCards: 9
+    numCards: 9,
   },
 ];
 
@@ -67,11 +73,31 @@ export default class Game extends React.Component {
             <TeamInfo name="Team Two" score={0} data={teamTwoData} />
           </Col>
           <Col lg={17} md={16} className="gameCol">
-            <Row 
+            <Row
               className="panel gamePanel"
               justify="center"
               align="middle"
-            ></Row>
+              style={{ flexDirection: 'column' }}
+            >
+              <h1 className="log">
+                Jai Ashar forcibly took the virginity card from Praneeth
+              </h1>
+              <Board />
+              <div className="buttonrow">
+                <Button type="primary" size="large">
+                  <QuestionOutlined />
+                  Ask
+                </Button>
+                <Button type="primary" size="large">
+                  <BellOutlined />
+                  Declare
+                </Button>
+                <Button type="primary" size="large">
+                  <SwapOutlined />
+                  Transfer
+                </Button>
+              </div>
+            </Row>
           </Col>
         </Row>
       </Row>

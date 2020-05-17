@@ -1,5 +1,6 @@
 import React from 'react';
 import '../style/Card.css';
+import { Button } from 'antd';
 const images = require.context('../resources/cards', true);
 
 export default class Card extends React.Component {
@@ -8,7 +9,14 @@ export default class Card extends React.Component {
 
     this.state = {
       path: '',
+      clicked: false
     };
+
+    this.handleAsk.bind(this);
+  }
+
+  handleAsk(e) {
+    console.log(e.target.value);
   }
 
   componentDidMount() {
@@ -23,11 +31,22 @@ export default class Card extends React.Component {
 
   render() {
     if (this.state.path !== '') {
-      return (
-        <div className="cardwrapper">
-          <img width="100%" src={images(`${this.state.path}`)} alt={'card'} />
-        </div>
-      );
+      if (this.props.type === 'ask') {
+        return (
+          <div className="askwrapper">
+            <label>
+              <input onClick={this.handleAsk} type="radio" name="test" value={this.props.rank + "_" + this.props.suit} checked />
+              <img width="100%" src={images(`${this.state.path}`)} alt={'card'} />
+            </label>
+          </div>
+        );
+      } else if (this.props.type === 'board') {
+        return (
+          <div className="cardwrapper">
+            <img width="100%" src={images(`${this.state.path}`)} alt={'card'} />
+          </div>
+        );
+      }
     }
 
     return <div></div>;

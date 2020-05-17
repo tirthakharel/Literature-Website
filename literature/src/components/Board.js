@@ -18,16 +18,16 @@ export default class Board extends React.Component {
 
     return (
       <Row className="cardrow">
-        <Card suit="Clubs" rank="4" set="Low Clubs" />
-        <Card suit="Clubs" rank="5" set="Low Clubs" />
-        <Card suit="Clubs" rank="6" set="Low Clubs" />
-        <Card suit="Clubs" rank="4" set="Low Clubs" />
-        <Card suit="Clubs" rank="5" set="Low Clubs" />
-        <Card suit="Clubs" rank="6" set="Low Clubs" />
-        <Card suit="Clubs" rank="4" set="Low Clubs" />
-        <Card suit="Clubs" rank="4" set="Low Clubs" />
-        <Card suit="Clubs" rank="4" set="Low Clubs" />
-        <Card suit="Clubs" rank="4" set="Low Clubs" />
+        <Card type='board' suit="Clubs" rank="4" set="Low Clubs" />
+        <Card type='board' suit="Clubs" rank="5" set="Low Clubs" />
+        <Card type='board' suit="Clubs" rank="6" set="Low Clubs" />
+        <Card type='board' suit="Clubs" rank="4" set="Low Clubs" />
+        <Card type='board' suit="Clubs" rank="5" set="Low Clubs" />
+        <Card type='board' suit="Clubs" rank="6" set="Low Clubs" />
+        <Card type='board' suit="Clubs" rank="4" set="Low Clubs" />
+        <Card type='board' suit="Clubs" rank="4" set="Low Clubs" />
+        <Card type='board' suit="Clubs" rank="4" set="Low Clubs" />
+        <Card type='board' suit="Clubs" rank="4" set="Low Clubs" />
       </Row>
     );
   }

@@ -38,11 +38,11 @@ export default class TeamInfo extends React.Component {
           />
           <div className="declared-sets">
             <img
-              src={icons(`./low_clubs.svg`)}
+              src={icons(`./low_clubs.png`)}
               width="40px"
               alt="declared set"
             />
-            <img src={icons(`./jokers.svg`)} width="40px" alt="declared set" />
+            <img src={icons(`./jokers.png`)} width="40px" alt="declared set" />
           </div>
         </div>
       </Row>

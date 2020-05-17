@@ -4,12 +4,27 @@ import Home from './components/Home';
 import Game from './components/Game';
 import './App.css';
 
-function App() {
-  return (
-    <div className="background">
-      <Home />
-    </div>
-  );
-}
+export default class App extends React.Component {
+  constructor(props) {
+    super(props);
 
-export default App;
+    this.state = {
+      play: false,
+    };
+    this.play = this.play.bind(this);
+  }
+  play() {
+    this.setState({ play: true });
+  }
+
+  render() {
+    return (
+      <div className="background">
+        { this.state.play ?
+          <Game /> :
+          <Home play={this.play} />
+        }
+      </div>
+    );
+  }
+}

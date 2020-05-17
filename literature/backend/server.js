@@ -24,16 +24,25 @@ const io = socketIO(server);
 let games = [];
 
 io.on("connection", (socket) => {
+
+  let connectionPlayer = null;
+  let connectionGame = null;
+
   socket.on('join', ({ name, room }, callback) => {
     let roomFound = false;
     for (let i = 0; i < games.length; i++) {
       if (games[i].roomName === room) {
         roomFound = true;
+        connectionGame = games[i];
+
         // add player to game
-        console.log(socket.id);
         const { error, player } = games[i].addPlayer(socket.id, name);
+        if (player) connectionPlayer = player;
+
         if (error) return callback(error);
-        //socket.join(room);
+        socket.join(room);
+        console.log(connectionGame.players);
+        callback();
       }
     }
     if (!roomFound) {
@@ -44,19 +53,32 @@ io.on("connection", (socket) => {
   socket.on('create', ({ name, room }, callback) => {
     for (let i = 0; i < games.length; i++) {
       if (games[i].roomName === room) {
-        return callback("The game code already exists")
+        return callback("The game code already exists");
       }
     }
+
     // create game
-    console.log(socket.id);
     let game = new Game(socket, room);
-    game.addPlayer(socket.id, name);
+    connectionGame = game;
+
+    const { player } = game.addPlayer(socket.id, name);
+    connectionPlayer = player;
     games.push(game);
-    //socket.join(room);
+
+    socket.join(room);
+    console.log(connectionGame.players);
+    callback();
   });
 
   socket.on('disconnect', () => {
-    console.log("disconnect");
+    if (connectionGame != null) {
+      if (connectionGame.started) {
+        connectionPlayer.connected = false;
+        console.log(connectionPlayer.name + " disconnected");
+      } else {
+        connectionGame.removePlayer(connectionPlayer.name);
+      }
+    }
   });
 });
 

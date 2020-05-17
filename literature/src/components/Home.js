@@ -48,10 +48,10 @@ export default class Home extends React.Component {
                   style={{ width: '75%', marginTop: '10%' }}
                 >
                   <TabPane tab="Join Game" key="1">
-                    {<GameForm text="Join Game" socket={this.socket} />}
+                    {<GameForm play={this.props.play} text="Join Game" socket={this.socket} />}
                   </TabPane>
                   <TabPane tab="Create Game" key="2">
-                    {<GameForm text="Create Game" socket={this.socket} />}
+                    {<GameForm play={this.props.play} text="Create Game" socket={this.socket} />}
                   </TabPane>
                 </Tabs>
               </Row>

@@ -7,19 +7,22 @@ import 'antd/dist/antd.css';
 export default class GameForm extends React.Component {
 
   onFinish = values => {
-    console.log(values);
     let name = values.name;
     let room = values.gameCode;
     if (this.props.text === "Join Game") {
       this.props.socket.emit('join', { name, room }, (error) => {
         if (error) {
           alert(error);
+        } else {
+          this.props.play();
         }
       });
     } else if (this.props.text === "Create Game") {
       this.props.socket.emit('create', { name, room }, (error) => {
         if (error) {
           alert(error);
+        } else {
+          this.props.play();
         }
       });
     }

@@ -23,7 +23,6 @@ export default class Card extends React.Component {
 
   render() {
     if (this.state.path !== '') {
-      console.log(this.state.path);
       return (
         <div className="cardwrapper">
           <img width="100%" src={images(`${this.state.path}`)} alt={'card'} />

@@ -110,6 +110,9 @@
   .homePanel {
     width: 275px;
   }
+  .log {
+    margin-bottom: 2%;
+  }
 }
 @media (max-width: 575px) {
   .homePanel {
@@ -121,5 +124,14 @@
   }
   .homeImg {
     width: 80vw;
+  }
+
+  .buttonrow > button {
+    width: 120px;
+    text-align: center;
+    border-radius: 7.5px;
+  }
+  .buttonrow > button:not(:last-child) {
+    margin-right: 3px;
   }
 }

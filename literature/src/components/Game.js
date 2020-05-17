@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Button } from 'antd';
+import { Row, Col, Button, Modal } from 'antd';
 import {
   QuestionCircleOutlined,
   BellOutlined,
@@ -55,8 +55,43 @@ export default class Game extends React.Component {
 
     this.state = {
       play: false,
+      askVisible: false,
+      declareVisible: false,
+      transferVisible: false
     };
   }
+
+  showAskModal = () => {
+    this.setState({
+      askVisible: true,
+    });
+  };
+  showDeclareModal = () => {
+    this.setState({
+      declareVisible: true,
+    });
+  };
+  showTransferModal = () => {
+    this.setState({
+      transferVisible: true,
+    });
+  };
+  handleOk = e => {
+    console.log(e);
+    this.setState({
+      askVisible: false,
+      declareVisible: false,
+      transferVisible: false,
+    });
+  };
+  handleCancel = e => {
+    console.log(e);
+    this.setState({
+      askVisible: false,
+      declareVisible: false,
+      transferVisible: false,
+    });
+  };
 
   render() {
     return (
@@ -80,23 +115,53 @@ export default class Game extends React.Component {
               style={{ flexDirection: 'column' }}
             >
               <h1 className="log">
-                Jai Ashar forcibly took the virginity card from Praneeth
+                Ishaan asked for the 9 of clubs from Praneeth
               </h1>
               <Board />
               <div className="buttonrow">
-                <Button type="primary" size="large">
+                <Button type="primary" onClick={this.showAskModal} size="large">
                   <QuestionOutlined />
                   Ask
                 </Button>
-                <Button type="primary" size="large">
+                <Button type="primary" onClick={this.showDeclareModal} size="large">
                   <BellOutlined />
                   Declare
                 </Button>
-                <Button type="primary" size="large">
+                <Button type="primary" onClick={this.showTransferModal} size="large">
                   <SwapOutlined />
                   Transfer
                 </Button>
               </div>
+              <Modal
+                title="Ask for a card"
+                visible={this.state.askVisible}
+                onOk={this.handleOk}
+                onCancel={this.handleCancel}
+              >
+                <p>Some contents...</p>
+                <p>Some contents...</p>
+                <p>Some contents...</p>
+              </Modal>
+              <Modal
+                title="Declare a set"
+                visible={this.state.declareVisible}
+                onOk={this.handleOk}
+                onCancel={this.handleCancel}
+              >
+                <p>Some contents...</p>
+                <p>Some contents...</p>
+                <p>Some contents...</p>
+              </Modal>
+              <Modal
+                title="Transfer your turn"
+                visible={this.state.transferVisible}
+                onOk={this.handleOk}
+                onCancel={this.handleCancel}
+              >
+                <p>Some contents...</p>
+                <p>Some contents...</p>
+                <p>Some contents...</p>
+              </Modal>
             </Row>
           </Col>
         </Row>

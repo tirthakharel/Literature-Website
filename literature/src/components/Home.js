@@ -40,17 +40,29 @@ export default class Home extends React.Component {
                   style={{ width: '75%', marginTop: '10%' }}
                 >
                   <TabPane tab="Join Game" key="1">
-                    {<GameForm assign={this.props.assign} text="Join Game" socket={this.props.socket} />}
+                    {
+                      <GameForm
+                        assign={this.props.assign}
+                        text="Join Game"
+                        socket={this.props.socket}
+                      />
+                    }
                   </TabPane>
                   <TabPane tab="Create Game" key="2">
-                    {<GameForm assign={this.props.assign} text="Create Game" socket={this.props.socket} />}
+                    {
+                      <GameForm
+                        assign={this.props.assign}
+                        text="Create Game"
+                        socket={this.props.socket}
+                      />
+                    }
                   </TabPane>
                 </Tabs>
               </Row>
-              </div>
+            </div>
           </Col>
           <Col className="homeCol" sm={12}>
-            <div class="panel homePanel">
+            <div className="panel homePanel">
               <Row
                 justify="center"
                 align="middle"

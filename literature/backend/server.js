@@ -1,30 +1,48 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const session = require('express-session');
+const mongoose = require('mongoose');
+const mongoStore = require('connect-mongo')(session);
+const cookie = require('cookie');
 const cors = require('cors');
 const socketIO = require('socket.io');
 const http = require('http');
 const Game = require('./Game.js');
-
+require('dotenv').config();
 // app
 const app = express();
+mongoose.connect(process.env.DB_CONN, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
 app.use(bodyParser.json());
 app.use(cors());
-// API
 
-// app.use(express.static(path.join(__dirname, '../build')))
-// app.get('*', (req, res) => {
-//     res.sendFile(path.join(__dirname, '../build'))
-// })
+const sessionMiddleware = session({
+  secret: process.env.SECRET_KEY,
+  store: new mongoStore({ mongooseConnection: mongoose.connection }),
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 8,
+  },
+});
 
 const port = process.env.PORT || 5000;
 
 const server = http.createServer(app);
 const io = socketIO(server);
 
+io.use((socket, next) => {
+  sessionMiddleware(socket.request, socket.request.res || {}, next);
+});
+
+app.use(sessionMiddleware);
+
 let games = [];
 
-io.on("connection", (socket) => {
-
+io.on('connection', (socket) => {
   let connectionPlayer = null;
   let connectionGame = null;
 
@@ -41,19 +59,22 @@ io.on("connection", (socket) => {
 
         if (error) return callback(error);
         socket.join(room);
-        io.to(room).emit('gameData', { code: connectionGame.room, players: connectionGame.players });
+        io.to(room).emit('gameData', {
+          code: connectionGame.room,
+          players: connectionGame.players,
+        });
         callback();
       }
     }
     if (!roomFound) {
-      return callback("The game code does not exist");
+      return callback('The game code does not exist');
     }
   });
 
   socket.on('create', ({ name, room }, callback) => {
     for (let i = 0; i < games.length; i++) {
       if (games[i].code === room) {
-        return callback("The game code already exists");
+        return callback('The game code already exists');
       }
     }
 
@@ -66,7 +87,10 @@ io.on("connection", (socket) => {
     games.push(game);
 
     socket.join(room);
-    io.to(room).emit('gameData', { code: connectionGame.room, players: connectionGame.players });
+    io.to(room).emit('gameData', {
+      code: connectionGame.room,
+      players: connectionGame.players,
+    });
     callback();
   });
 
@@ -74,11 +98,14 @@ io.on("connection", (socket) => {
     if (connectionGame != null) {
       if (connectionGame.started) {
         connectionPlayer.connected = false;
-        console.log(connectionPlayer.name + " disconnected");
+        console.log(connectionPlayer.name + ' disconnected');
       } else {
         connectionGame.removePlayer(connectionPlayer.name);
-        io.to(connectionGame.code).emit('gameData', { code: connectionGame.room, players: connectionGame.players })
-       
+        io.to(connectionGame.code).emit('gameData', {
+          code: connectionGame.room,
+          players: connectionGame.players,
+        });
+
         // remove the game if there are no players
         if (connectionGame.players.length === 0) {
           for (let i = 0; i < games.length; i++) {

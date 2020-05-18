@@ -153,13 +153,14 @@ export default class Game extends React.Component {
       let source = this.props.playerName;
       let target = askedPlayer;
       this.props.socket.emit("ask", { source, target, card }, (asked) => {
-        askedCard = null;
         this.setState({
           askVisible: asked,
           declareVisible: false,
           transferVisible: false,
           transfer: false,
+          availableSetCards: this.state.availableCards[askedCard.set],
         });
+        askedCard = null;
       });
     }
   };

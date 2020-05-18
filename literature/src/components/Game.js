@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Button, Modal, Radio, Select } from 'antd';
+import { Row, Col, Button, Modal, Radio, Select, Tabs } from 'antd';
 import {
   QuestionCircleOutlined,
   UserOutlined,
@@ -14,6 +14,7 @@ import TeamInfo from './TeamInfo.js';
 import Board from './Board';
 import Card from './Card';
 
+const { TabPane } = Tabs;
 const { Option } = Select;
 
 let teamOneData = [];
@@ -25,6 +26,7 @@ export default class Game extends React.Component {
 
     this.state = {
       play: false,
+      helpVisible: false,
       askVisible: false,
       askPlayer: null,
       askCard: null,
@@ -38,48 +40,54 @@ export default class Game extends React.Component {
     };
   }
 
-  componentWillMount() {
-    let teamOne = [];
-    let teamTwo = [];
-    let arr = this.props.game.players;
-    console.log(arr);
-    for (let i = 0; i < arr.length; i++) {
-      if (arr[i].team === 1) {
-        teamOne.push(arr[i]);
-      } else if (arr[i].team === 2) {
-        teamTwo.push(arr[i]);
-      }
-      if (arr[i].name === this.props.playerName) {
-        this.setState({ cards: arr[i].hand });
-      }
-    }
-    this.setState({
-      teamOneData: teamOne,
-      teamTwoData: teamTwo,
-    });
-  }
+  // componentWillMount() {
+  //   let teamOne = [];
+  //   let teamTwo = [];
+  //   let arr = this.props.game.players;
+  //   console.log(arr);
+  //   for (let i = 0; i < arr.length; i++) {
+  //     if (arr[i].team === 1) {
+  //       teamOne.push(arr[i]);
+  //     } else if (arr[i].team === 2) {
+  //       teamTwo.push(arr[i]);
+  //     }
+  //     if (arr[i].name === this.props.playerName) {
+  //       this.setState({ cards: arr[i].hand });
+  //     }
+  //   }
+  //   this.setState({
+  //     teamOneData: teamOne,
+  //     teamTwoData: teamTwo,
+  //   });
+  // }
 
-  componentWillUpdate(prevProps, prevState) {
-    let teamOne = [];
-    let teamTwo = [];
-    let arr = this.props.game.players;
-    for (let i = 0; i < arr.length; i++) {
-      if (arr[i].team === 1) {
-        teamOne.push(arr[i]);
-      } else if (arr[i].team === 2) {
-        teamTwo.push(arr[i]);
-      }
-    }
-    if (
-      teamOne.length !== prevState.teamOneData.length ||
-      teamTwo.length !== prevState.teamTwoData.length
-    ) {
-      this.setState({
-        teamOneData: teamOne,
-        teamTwoData: teamTwo,
-      });
-    }
-  }
+  // componentWillUpdate(prevProps, prevState) {
+  //   let teamOne = [];
+  //   let teamTwo = [];
+  //   let arr = this.props.game.players;
+  //   for (let i = 0; i < arr.length; i++) {
+  //     if (arr[i].team === 1) {
+  //       teamOne.push(arr[i]);
+  //     } else if (arr[i].team === 2) {
+  //       teamTwo.push(arr[i]);
+  //     }
+  //   }
+  //   if (
+  //     teamOne.length !== prevState.teamOneData.length ||
+  //     teamTwo.length !== prevState.teamTwoData.length
+  //   ) {
+  //     this.setState({
+  //       teamOneData: teamOne,
+  //       teamTwoData: teamTwo,
+  //     });
+  //   }
+  // }
+
+  showHelpModal = () => {
+    this.setState({
+      helpVisible: true,
+    });
+  };
 
   //Ask Modal Events
   showAskModal = () => {
@@ -209,22 +217,33 @@ export default class Game extends React.Component {
       askVisible: false,
       declareVisible: false,
       transferVisible: false,
+      helpVisible: false,
     });
   };
 
   render() {
     return (
       <Row className="bg">
-        <img
-          src={logo}
-          alt="Literature logo"
-          style={{ margin: '30px' }}
-          width="200px"
-        />
+        <Row>
+          <Col span={22}>
+            <img
+            src={logo}
+            alt="Literature logo"
+            style={{ margin: '30px' }}
+            width="200px"
+          />
+          </Col>
+          <Col span={1}>
+            <Row style={{height: '100%'}} align='middle' justify='center'>
+              <Button onClick={this.showHelpModal} shape="circle" icon={<QuestionOutlined />}>
+              </Button>
+            </Row>
+          </Col>
+        </Row>
         <Row className="gameRow">
           <Col className="teamCol" lg={5} md={6}>
-            <TeamInfo name="Team One" score={this.props.game.scoreTeam1} data={this.state.teamOneData} />
-            <TeamInfo name="Team Two" score={this.props.game.scoreTeam2} data={this.state.teamTwoData} />
+            <TeamInfo name="Team One" score={0} data={this.state.teamOneData} />
+            <TeamInfo name="Team Two" score={0} data={this.state.teamTwoData} />
           </Col>
           <Col lg={17} md={16} className="gameCol">
             <Row
@@ -364,6 +383,35 @@ export default class Game extends React.Component {
                       <Radio.Button value="d">Praneeth</Radio.Button>
                     </Radio.Group>
                   </Row>
+              </Modal>
+              <Modal
+                title="How To Play"
+                visible={this.state.helpVisible}
+                onOk={this.handleTransfer}
+                onCancel={this.handleCancel}
+                style={{padding: 0}}
+                footer={[
+                  
+                ]}
+              >
+                <Tabs
+                  defaultActiveKey="1"
+                >
+                  <TabPane tab="Setup" key="1">
+                    <p style={{marginBottom: '3px'}}><b>Players:</b> 6, 8, or 10</p>
+                    <p style={{marginBottom: '3px'}}><b>Deck:</b> 52 Card Deck + 2 Jokers</p> 
+                    <p>
+                      Literature, or Fish, is a strategic turn-based card game. The game is comprised
+                      of two teams whose objective is to win 5 sets. 
+                    </p>
+                  </TabPane>
+                  <TabPane tab="Ask" key="2">
+                    instructions
+                  </TabPane>
+                  <TabPane tab="Declare" key="3">
+                    instructions
+                  </TabPane>
+                </Tabs>
               </Modal>
             </Row>
           </Col>

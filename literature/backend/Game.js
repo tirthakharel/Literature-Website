@@ -1,5 +1,6 @@
 const Player = require('./player');
 const Deck = require('./deck');
+const Card = require('./card');
 
 function Game(code) {
   this.code = code;
@@ -8,7 +9,8 @@ function Game(code) {
   this.scoreTeam1 = 0;
   this.scoreTeam2 = 0;
   this.started = false;
-
+  this.declaredSets = [];
+  this.log = "Let's start the game!";
   this.deck = new Deck();
 }
 
@@ -60,15 +62,21 @@ Game.prototype.removePlayer = function removePlayer(name) {
 Game.prototype.ask = function ask(sourcePlayerName, targetPlayerName, card) {
   let sourcePlayer = this.playerMap.get(sourcePlayerName);
   let targetPlayer = this.playerMap.get(targetPlayerName);
-  if (sourcePlayer.isTurn && sourcePlayer.hand.length > 0 && targetPlayerName.hand.length > 0) {
+  if (sourcePlayer.isTurn && sourcePlayer.hand.length > 0 && targetPlayer.hand.length > 0) {
     if (targetPlayer.hasCard(card)) {
       targetPlayer.removeFromHand(card);
       sourcePlayer.addToHand(card);
-      // log "took card"
+      this.log = `${sourcePlayerName} took the ${Card.toString(card)} from ${targetPlayerName}`;
+      sourcePlayer.allAvailableCards();
+      targetPlayer.allAvailableCards();
+      return true;
     } else {
       sourcePlayer.isTurn = false;
       targetPlayer.isTurn = true;
-      // log "asked for card"
+      this.log = `${sourcePlayerName} asked for the ${Card.toString(card)} from ${targetPlayerName}`;
+      sourcePlayer.allAvailableCards();
+      targetPlayer.allAvailableCards();
+      return false;
     }
   }
 }
@@ -86,6 +94,7 @@ Game.prototype.declare = function declare(playerName, map, set) {
             this.scoreTeam1++;
           }
           this.deleteCards(set);
+          this.declaredSets.push(set);
           return;
         }
       }
@@ -97,6 +106,7 @@ Game.prototype.declare = function declare(playerName, map, set) {
       this.scoreTeam2++;
     }
     this.deleteCards(set);
+    this.declaredSets.push(set);
   }
 }
 

@@ -20,7 +20,7 @@ const ranks = [
   'Black',
 ];
 
-const sets = [
+const setNames = [
   'Low Hearts',
   'High Hearts',
   'Low Diamonds',
@@ -116,7 +116,7 @@ const jokers = [
 module.exports = {
   suits,
   ranks,
-  sets,
+  setNames,
   lowHearts,
   highHearts,
   lowDiamonds,

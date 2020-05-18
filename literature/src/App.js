@@ -47,9 +47,9 @@ export default class App extends React.Component {
       <div className="background">
         {this.state.play ? (
           <Game 
-          playerName={this.state.playerName} 
-          game={this.state.game} 
-          socket={this.socket} 
+            playerName={this.state.playerName} 
+            game={this.state.game} 
+            socket={this.socket} 
         /> 
         ) : this.state.assign ? (
           <Assign 

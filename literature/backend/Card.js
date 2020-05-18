@@ -20,10 +20,10 @@ Card.prototype.getSet = function getSet() {
   }
 };
 
-Card.prototype.toString = function toString() {
-  return this.suit === 'Joker'
-    ? this.rank + ' ' + this.suit
-    : this.rank + ' of ' + this.suit;
+Card.toString = function toString(card) {
+  return card.suit === 'Joker'
+    ? card.rank + ' ' + card.suit
+    : card.rank + ' of ' + card.suit;
 };
 
 Card.prototype.equals = function equals(card) {

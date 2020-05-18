@@ -5,27 +5,17 @@ import 'antd/dist/antd.css';
 const icons = require.context('../resources/icons');
 
 export default class TeamInfo extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      name: this.props.name,
-      score: this.props.score,
-      data: this.props.data,
-    };
-  }
-
   render() {
     return (
       <Row className="panel teamPanel">
         <div className="teamHeader">
-          <div>{this.state.name}</div>
-          <div>{this.state.score}</div>
+          <div>{this.props.name}</div>
+          <div>{this.props.score}</div>
         </div>
         <div className="members">
           <List
             itemLayout="horizontal"
-            dataSource={this.state.data}
+            dataSource={this.props.data}
             renderItem={(item) => (
               <List.Item>
                 <List.Item.Meta title={item.name} />

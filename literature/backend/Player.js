@@ -1,4 +1,5 @@
-const Deck = require('./Deck.js');
+const Deck = require('./deck');
+const { setNames } = require('../constants/constants.js');
 
 function Player(id, name) {
   this.hand = [];
@@ -8,6 +9,8 @@ function Player(id, name) {
   this.team = null;
   this.leader = false;
   this.isTurn = false;
+  this.availableCards = {};
+  this.sets = [];
 }
 
 Player.prototype.addToHand = function addToHand(card) {
@@ -15,16 +18,20 @@ Player.prototype.addToHand = function addToHand(card) {
 };
 
 Player.prototype.removeFromHand = function removeFromHand(card) {
-  for (let i = 0; i < this.hand; i++) {
-    if (this.hand[i].equals(card)) {
+  for (let i = 0; i < this.hand.length; i++) {
+    if (this.hand[i].suit === card.suit && this.hand[i].rank === card.rank) {
       this.hand.splice(i, 1);
     }
   }
 };
 
 Player.prototype.hasCard = function hasCard(card) {
-  for (let i = 0; i < this.hand; i++) {
-    if (this.hand[i].equals(card)) {
+
+  console.log(card.suit);
+  console.log(card.rank);
+
+  for (let i = 0; i < this.hand.length; i++) {
+    if (this.hand[i].suit === card.suit && this.hand[i].rank === card.rank) {
       return true;
     }
   }
@@ -37,10 +44,10 @@ Player.prototype.getSets = function getSets() {
     Sets.add(card.set);
   });
 
-  return Sets;
+  return Array.from(Sets);
 };
 
-Player.prototype.availableCards = function availableCards(stringSet) {
+Player.prototype.available = function available(stringSet) {
   const set = Deck.getSet(stringSet);
   let arr = [];
 
@@ -55,6 +62,19 @@ Player.prototype.availableCards = function availableCards(stringSet) {
   });
 
   return arr;
+};
+
+Player.prototype.allAvailableCards = function allAvailableCards() {
+  let res = {};
+
+  this.sets = this.getSets();
+
+  setNames.forEach((stringSet) => {
+    res[stringSet] = this.available(stringSet);
+  });
+  
+  this.availableCards = res;
+
 };
 
 module.exports = Player;

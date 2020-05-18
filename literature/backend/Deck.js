@@ -17,12 +17,12 @@ function Deck() {
     this.deck = [];
     
     for (let i = 0; i < suits.length; i++) {
-        if (suits[i] == 'Joker') {
+        if (suits[i] === 'Joker') {
             this.deck.push(new Card('Red', suits[i]));
             this.deck.push(new Card('Black', suits[i]));
         } else {
             for (let j = 0; j < ranks.length; j++) {
-                if (ranks[j] != 'Red' && ranks[j] != 'Black') {
+                if (ranks[j] !== 'Red' && ranks[j] !== 'Black') {
                     this.deck.push(new Card(ranks[j], suits[i]));
                 }
             }
@@ -43,6 +43,10 @@ Deck.prototype.deal = function deal(players) {
     
     for (let i = 0; i < this.deck.length; i++) {
         players[i % numPlayers].addToHand(this.deck[i]);
+    }
+    
+    for (let i = 0; i< players.length; i++) {
+        players[i].allAvailableCards();
     }
 }
 
@@ -69,9 +73,7 @@ Deck.getSet = function getSet(set) {
             return jokers;
         default: 
             return [];
-    }
-
-}
-
+    }  
+  }
 
 module.exports = Deck;

@@ -121,6 +121,23 @@ io.on('connection', (socket) => {
       game: connectionGame,
     });
   });
+  
+  socket.on('ask', ({ source, target, card }, callback) => {
+    console.log(target);
+    let asked = connectionGame.ask(source, target, card);
+    io.to(connectionGame.code).emit('gameData', {
+      game: connectionGame,
+    });
+    callback(asked);
+  });
+
+  socket.on('transfer', ({ source, target }, callback) => {
+    connectionGame.transfer(source, target);
+    io.to(connectionGame.code).emit('gameData', {
+      game: connectionGame,
+    });
+    callback();
+  });
 
   socket.on('disconnect', () => {
     if (connectionGame != null) {

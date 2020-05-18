@@ -11,12 +11,6 @@ export default class Card extends React.Component {
       path: '',
       clicked: false
     };
-
-    this.handleAsk.bind(this);
-  }
-
-  handleAsk(e) {
-    console.log(e.target.value);
   }
 
   componentDidMount() {
@@ -28,13 +22,30 @@ export default class Card extends React.Component {
     this.setState({ path });
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    let { rank, suit, set } = this.props;
+    if (rank !== "10") {
+      rank = rank.charAt(0);
+    }
+    let path = `./${set.replace(/ /g, '_')}/${rank}${suit.charAt(0)}.png`;
+    if (path !== prevState.path) {
+      this.setState({ path });
+    }
+  }
+
   render() {
     if (this.state.path !== '') {
       if (this.props.type === 'ask') {
         return (
           <div className="askwrapper">
             <label>
-              <input onClick={this.handleAsk} type="radio" name="test" value={this.props.rank + "_" + this.props.suit} />
+              <input 
+                onClick={this.props.clickFunc} 
+                type="radio" name="test" 
+                data-suit={this.props.suit} 
+                data-rank={this.props.rank}
+                data-set={this.props.set} 
+              />
               <img width="100%" src={images(`${this.state.path}`)} alt={'card'} />
             </label>
           </div>

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Row, Col, Button, Modal, Radio, Select, Tabs } from 'antd';
 import {
-  QuestionCircleOutlined,
   UserOutlined,
   BellOutlined,
   SwapOutlined,
@@ -17,8 +16,9 @@ import Card from './Card';
 const { TabPane } = Tabs;
 const { Option } = Select;
 
-let teamOneData = [];
-let teamTwoData = [];
+let askedCard = null;
+let askedPlayer = null;
+let transferPlayer = null;
 
 export default class Game extends React.Component {
   constructor(props) {
@@ -30,58 +30,94 @@ export default class Game extends React.Component {
       askVisible: false,
       askPlayer: null,
       askCard: null,
-      availableCards: [],
+      availableCards: {},
+      availableSetCards: [],
+      availableSets: [],
       declareVisible: false,
       declareCards: [],
       transferVisible: false,
       teamOneData: [],
       teamTwoData: [],
-      cards: []
+      team: null,
+      cards: [],
+      isTurn: false,
+      log: "Let's start the game"
     };
   }
 
-  // componentWillMount() {
-  //   let teamOne = [];
-  //   let teamTwo = [];
-  //   let arr = this.props.game.players;
-  //   console.log(arr);
-  //   for (let i = 0; i < arr.length; i++) {
-  //     if (arr[i].team === 1) {
-  //       teamOne.push(arr[i]);
-  //     } else if (arr[i].team === 2) {
-  //       teamTwo.push(arr[i]);
-  //     }
-  //     if (arr[i].name === this.props.playerName) {
-  //       this.setState({ cards: arr[i].hand });
-  //     }
-  //   }
-  //   this.setState({
-  //     teamOneData: teamOne,
-  //     teamTwoData: teamTwo,
-  //   });
-  // }
+  componentWillMount() {
+    let teamOne = [];
+    let teamTwo = [];
+    let arr = this.props.game.players;
+    console.log(arr);
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i].team === 1) {
+        teamOne.push(arr[i]);
+      } else if (arr[i].team === 2) {
+        teamTwo.push(arr[i]);
+      }
+      if (arr[i].name === this.props.playerName) {
+        this.setState({ 
+          cards: arr[i].hand,
+          isTurn: arr[i].isTurn,
+          availableCards: arr[i].availableCards,
+          team: arr[i].team,
+          availableSets: arr[i].sets,
+          log: this.props.game.log,
+        });
+      }
+    }
+    this.setState({
+      teamOneData: teamOne,
+      teamTwoData: teamTwo,
+    });
+  }
 
-  // componentWillUpdate(prevProps, prevState) {
-  //   let teamOne = [];
-  //   let teamTwo = [];
-  //   let arr = this.props.game.players;
-  //   for (let i = 0; i < arr.length; i++) {
-  //     if (arr[i].team === 1) {
-  //       teamOne.push(arr[i]);
-  //     } else if (arr[i].team === 2) {
-  //       teamTwo.push(arr[i]);
-  //     }
-  //   }
-  //   if (
-  //     teamOne.length !== prevState.teamOneData.length ||
-  //     teamTwo.length !== prevState.teamTwoData.length
-  //   ) {
-  //     this.setState({
-  //       teamOneData: teamOne,
-  //       teamTwoData: teamTwo,
-  //     });
-  //   }
-  // }
+  componentWillUpdate(prevProps, prevState) {
+    let teamOne = [];
+    let teamTwo = [];
+    let cards = [];
+    let availableCards = {};
+    let availableSets = [];
+    let isTurn = false;
+    let team = null;
+    let arr = this.props.game.players;
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i].team === 1) {
+        teamOne.push(arr[i]);
+      } else if (arr[i].team === 2) {
+        teamTwo.push(arr[i]);
+      }
+      if (arr[i].name === this.props.playerName) {
+        cards = arr[i].hand;
+        isTurn = arr[i].isTurn;
+        availableCards = arr[i].availableCards;
+        team = arr[i].team;
+        availableSets = arr[i].sets;
+      }
+    }
+    if (
+      teamOne.length !== prevState.teamOneData.length ||
+      teamTwo.length !== prevState.teamTwoData.length ||
+      cards.length !== prevState.cards.length ||
+      availableCards.length !== prevState.availableCards.length ||
+      availableSets.length !== prevState.availableSets.length ||
+      isTurn !== prevState.isTurn ||
+      team !== prevState.team ||
+      this.props.game.log !== prevState.log
+    ) {
+      this.setState({
+        teamOneData: teamOne,
+        teamTwoData: teamTwo,
+        isTurn: isTurn,
+        cards: cards,
+        availableCards: availableCards,
+        team: team,
+        availableSets: availableSets,
+        log: this.props.game.log
+      });
+    }
+  }
 
   showHelpModal = () => {
     this.setState({
@@ -96,45 +132,42 @@ export default class Game extends React.Component {
     });
   };
 
-  handleAsk = e => {
-    console.log(e);
-    this.setState({
-      askVisible: false,
-      declareVisible: false,
-      transferVisible: false,
-    });
-  };
+  cardClicked = (e) => {
+    askedCard = {
+      rank: e.target.dataset.rank, 
+      suit: e.target.dataset.suit,
+      set: e.target.dataset.set,
+    }
+  }
 
+  playerClicked = (e) => {
+    console.log(e.target.value);
+    askedPlayer = e.target.value;
+  }
+
+  handleAsk = e => {
+    console.log(askedPlayer);
+    console.log(askedCard);
+    if (askedCard != null && askedPlayer != null) {
+      let card = askedCard;
+      let source = this.props.playerName;
+      let target = askedPlayer;
+      this.props.socket.emit("ask", { source, target, card }, (asked) => {
+        askedCard = null;
+        this.setState({
+          askVisible: asked,
+          declareVisible: false,
+          transferVisible: false,
+          transfer: false,
+        });
+      });
+    }
+  };
+  
   handleSetSelect = e => {
     console.log(e);
-    //send set name to backend
-
-    //receive set of available cards
-
-    //set state to that list of cards
     this.setState({
-      availableCards: [
-        { rank: '2', 
-          suit: 'Clubs',
-          set: 'Low Clubs',
-        },
-        { rank: '3', 
-          suit: 'Clubs',
-          set: 'Low Clubs',
-        },
-        { rank: '4', 
-          suit: 'Clubs',
-          set: 'Low Clubs',
-        },
-        { rank: '5', 
-          suit: 'Clubs',
-          set: 'Low Clubs',
-        },
-        { rank: '6', 
-          suit: 'Clubs',
-          set: 'Low Clubs',
-        }
-      ]
+      availableSetCards: this.state.availableCards[e],
     });
   }
 
@@ -151,6 +184,7 @@ export default class Game extends React.Component {
       askVisible: false,
       declareVisible: false,
       transferVisible: false,
+      transfer: true,
     });
   };
 
@@ -202,13 +236,25 @@ export default class Game extends React.Component {
     });
   };
 
+  transferClicked = (e) => {
+    transferPlayer = e.target.value;
+  }
+
   handleTransfer = e => {
     console.log(e);
-    this.setState({
-      askVisible: false,
-      declareVisible: false,
-      transferVisible: false,
-    });
+    if (transferPlayer != null) {
+      let source = this.props.playerName;
+      let target = transferPlayer;
+      this.props.socket.emit("transfer", { source, target }, () => {
+        transferPlayer = null;
+        this.setState({
+          askVisible: false,
+          declareVisible: false,
+          transferVisible: false,
+          transfer: true,
+        });
+      }); 
+    }
   };
 
   handleCancel = e => {
@@ -222,6 +268,7 @@ export default class Game extends React.Component {
   };
 
   render() {
+
     return (
       <Row className="bg">
         <Row>
@@ -242,8 +289,8 @@ export default class Game extends React.Component {
         </Row>
         <Row className="gameRow">
           <Col className="teamCol" lg={5} md={6}>
-            <TeamInfo name="Team One" score={0} data={this.state.teamOneData} />
-            <TeamInfo name="Team Two" score={0} data={this.state.teamTwoData} />
+            <TeamInfo name="Team One" score={this.props.game.scoreTeam1} data={this.state.teamOneData} />
+            <TeamInfo name="Team Two" score={this.props.game.scoreTeam2} data={this.state.teamTwoData} />
           </Col>
           <Col lg={17} md={16} className="gameCol">
             <Row
@@ -253,7 +300,7 @@ export default class Game extends React.Component {
               style={{ flexDirection: 'column' }}
             >
               <h1 className="log">
-                Ishaan asked for the 9 of clubs from Praneeth
+                {this.state.log}
               </h1>
               <Board cards={this.state.cards} />
               <div className="buttonrow">
@@ -285,11 +332,14 @@ export default class Game extends React.Component {
                 ]}
                 >
                   <Row align="middle" justify="center" style={{ marginBottom: '20px'}}>
-                    <Radio.Group defaultValue="a" buttonStyle="solid">
-                      <Radio.Button value="a">Ishaan</Radio.Button>
-                      <Radio.Button value="b">Ashwin</Radio.Button>
-                      <Radio.Button value="c">Tirtha</Radio.Button>
-                      <Radio.Button value="d">Praneeth</Radio.Button>
+                    <Radio.Group onChange={this.playerClicked} buttonStyle="solid">
+                      {this.props.game.players.map((player) => {
+                        if (player.name !== this.props.playerName && player.team !== this.state.team) {
+                          return <Radio.Button value={player.name}>{player.name}</Radio.Button>;
+                        }
+
+                        return <span></span>;
+                      })}
                     </Radio.Group>
                   </Row>
                   <Row align="middle" justify="center" style={{ marginBottom: '20px'}}>
@@ -298,20 +348,20 @@ export default class Game extends React.Component {
                       placeholder="Select Set"
                       onChange={this.handleSetSelect}
                     >
-                      <Option value="LH">Low Hearts</Option>
-                      <Option value="HH">High Hearts</Option>
-                      <Option value="LD">Low Diamonds</Option>
-                      <Option value="HD">High Diamonds</Option>
-                      <Option value="LS">Low Spades</Option>
-                      <Option value="HS">High Spades</Option>
-                      <Option value="LC">Low Clubs</Option>
-                      <Option value="HC">High Clubs</Option>
-                      <Option value="J">Jokers</Option>
+                      {this.state.availableSets.map((set) => 
+                        <Option value={set}>{set}</Option>
+                      )} 
                     </Select>
                   </Row>
                   <Row align="middle" justify="center">
-                    {this.state.availableCards.map((card) => 
-                      <Card type='ask' suit={card.suit} rank={card.rank} set={card.set} />
+                    {this.state.availableSetCards.map((card) => 
+                      <Card 
+                        type='ask' 
+                        clickFunc={this.cardClicked} 
+                        suit={card.suit} 
+                        rank={card.rank} 
+                        set={card.set} 
+                      />
                     )}
                   </Row>
               </Modal>
@@ -335,15 +385,15 @@ export default class Game extends React.Component {
                       placeholder="Select Set"
                       onChange={this.handleDeclareSelect}
                     >
-                      <Option value="LH">Low Hearts</Option>
-                      <Option value="HH">High Hearts</Option>
-                      <Option value="LD">Low Diamonds</Option>
-                      <Option value="HD">High Diamonds</Option>
-                      <Option value="LS">Low Spades</Option>
-                      <Option value="HS">High Spades</Option>
-                      <Option value="LC">Low Clubs</Option>
-                      <Option value="HC">High Clubs</Option>
-                      <Option value="J">Jokers</Option>
+                      <Option value="Low Hearts">Low Hearts</Option>
+                      <Option value="High Hearts">High Hearts</Option>
+                      <Option value="Low Diamonds">Low Diamonds</Option>
+                      <Option value="High Diamonds">High Diamonds</Option>
+                      <Option value="Low Spades">Low Spades</Option>
+                      <Option value="High Spades">High Spades</Option>
+                      <Option value="Low Clubs">Low Clubs</Option>
+                      <Option value="High Clubs">High Clubs</Option>
+                      <Option value="Jokers">Jokers</Option>
                     </Select>
                   </Row>
                   <Row align="middle" justify="center">
@@ -376,11 +426,14 @@ export default class Game extends React.Component {
                 ]}
               >
                 <Row align="middle" justify="center">
-                    <Radio.Group defaultValue="a" buttonStyle="solid">
-                      <Radio.Button value="a">Ishaan</Radio.Button>
-                      <Radio.Button value="b">Ashwin</Radio.Button>
-                      <Radio.Button value="c">Tirtha</Radio.Button>
-                      <Radio.Button value="d">Praneeth</Radio.Button>
+                    <Radio.Group onChange={this.transferClicked} buttonStyle="solid">
+                      {this.props.game.players.map((player) => {
+                        if (player.name !== this.props.playerName && player.team === this.state.team) {
+                          return <Radio.Button value={player.name}>{player.name}</Radio.Button>;
+                        }
+
+                        return <span></span>;
+                      })}
                     </Radio.Group>
                   </Row>
               </Modal>

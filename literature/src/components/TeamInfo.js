@@ -30,7 +30,7 @@ export default class TeamInfo extends React.Component {
               <List.Item>
                 <List.Item.Meta title={item.name} />
                 <div style={{ position: 'relative', bottom: '2px' }}>
-                  {item.numCards}
+                  {item.hand.length}
                 </div>
               </List.Item>
             )}

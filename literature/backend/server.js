@@ -46,11 +46,12 @@ io.on('connection', (socket) => {
   let connectionPlayer = null;
   let connectionGame = null;
 
-  socket.on('join', ({ name, room }, callback) => {
-    let roomFound = false;
+  socket.on('join', ({ name, code }, callback) => {
+    let codeFound = false;
+    console.log(code);
     for (let i = 0; i < games.length; i++) {
-      if (games[i].code === room) {
-        roomFound = true;
+      if (games[i].code === code) {
+        codeFound = true;
         connectionGame = games[i];
 
         // add player to game
@@ -58,38 +59,36 @@ io.on('connection', (socket) => {
         if (player) connectionPlayer = player;
 
         if (error) return callback({ error: error });
-        socket.join(room);
-        io.to(room).emit('gameData', {
-          code: connectionGame.code,
-          players: connectionGame.players,
+        socket.join(code);
+        io.to(code).emit('gameData', {
+          game: connectionGame,
         });
         callback({ player: connectionPlayer.name });
       }
     }
-    if (!roomFound) {
+    if (!codeFound) {
       return callback({ error: 'The game code does not exist' });
     }
   });
 
-  socket.on('create', ({ name, room }, callback) => {
+  socket.on('create', ({ name, code }, callback) => {
     for (let i = 0; i < games.length; i++) {
-      if (games[i].code === room) {
+      if (games[i].code === code) {
         return callback({ error: 'The game code already exists' });
       }
     }
 
     // create game
-    let game = new Game(socket, room);
+    let game = new Game(code);
     connectionGame = game;
 
     const { player } = game.addPlayer(socket.id, name);
     connectionPlayer = player;
     games.push(game);
 
-    socket.join(room);
-    io.to(room).emit('gameData', {
-      code: connectionGame.code,
-      players: connectionGame.players,
+    socket.join(code);
+    io.to(code).emit('gameData', {
+      game: connectionGame,
     });
     callback({ player: connectionPlayer.name });
   });
@@ -111,8 +110,15 @@ io.on('connection', (socket) => {
     }
 
     io.to(connectionGame.code).emit('gameData', {
-      code: connectionGame.code,
-      players: connectionGame.players,
+      game: connectionGame,
+    });
+  });
+
+  socket.on('start', () => {
+    connectionGame.start();
+    console.log(connectionGame.players);
+    io.to(connectionGame.code).emit('gameData', {
+      game: connectionGame,
     });
   });
 
@@ -124,8 +130,7 @@ io.on('connection', (socket) => {
       } else {
         connectionGame.removePlayer(connectionPlayer.name);
         io.to(connectionGame.code).emit('gameData', {
-          code: connectionGame.code,
-          players: connectionGame.players,
+          game: connectionGame,
         });
 
         // remove the game if there are no players

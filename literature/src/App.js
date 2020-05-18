@@ -15,17 +15,13 @@ export default class App extends React.Component {
 
     this.state = {
       play: false,
-      players: [],
+      game: null,
       playerName: null,
-      code: null,
       assign: false,
     };
-    this.play = this.play.bind(this);
     this.assign = this.assign.bind(this);
   }
-  play() {
-    this.setState({ play: true });
-  }
+
   assign(playerName) {
     this.setState({ 
       assign: true, 
@@ -36,19 +32,31 @@ export default class App extends React.Component {
   componentWillMount() {
     this.socket = io(connection);
     this.socket.on('gameData', (data) => {
-      this.setState({ players: data.players });
-      this.setState({ code: data.code });
+      this.setState({ game: data.game });
+      if (data.game.started) {
+        this.setState({ play: true });
+      } else {
+        this.setState({ play: false });
+      }
     });
   }
 
   render() {
-    console.log(document.cookie, 'here');
+    //console.log(document.cookie, 'here');
     return (
       <div className="background">
         {this.state.play ? (
-          <Game />
+          <Game 
+          playerName={this.state.playerName} 
+          game={this.state.game} 
+          socket={this.socket} 
+        /> 
         ) : this.state.assign ? (
-          <Assign playerName={this.state.playerName} players={this.state.players} socket={this.socket} />
+          <Assign 
+            playerName={this.state.playerName} 
+            game={this.state.game} 
+            socket={this.socket} 
+          />
         ) : (
           <Home socket={this.socket} assign={this.assign} />
         )}

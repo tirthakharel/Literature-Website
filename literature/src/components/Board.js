@@ -5,29 +5,14 @@ import 'antd/dist/antd.css';
 import '../style/Home.css';
 
 export default class Board extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      cards: [],
-    };
-  }
-
   render() {
     //let cardRow = this.state.cards.map((card, index) => <Card key={index} rank={card.rank} suit={card.suit} set={card.set} />);
 
     return (
       <Row className="cardrow">
-        <Card type='board' suit="Clubs" rank="4" set="Low Clubs" />
-        <Card type='board' suit="Clubs" rank="5" set="Low Clubs" />
-        <Card type='board' suit="Clubs" rank="6" set="Low Clubs" />
-        <Card type='board' suit="Clubs" rank="4" set="Low Clubs" />
-        <Card type='board' suit="Clubs" rank="5" set="Low Clubs" />
-        <Card type='board' suit="Clubs" rank="6" set="Low Clubs" />
-        <Card type='board' suit="Clubs" rank="4" set="Low Clubs" />
-        <Card type='board' suit="Clubs" rank="4" set="Low Clubs" />
-        <Card type='board' suit="Clubs" rank="4" set="Low Clubs" />
-        <Card type='board' suit="Clubs" rank="4" set="Low Clubs" />
+        {this.props.cards.map((item, index) => (
+          <Card type='board' suit={item.suit} rank={item.rank} set={item.set} />
+        ))}
       </Row>
     );
   }

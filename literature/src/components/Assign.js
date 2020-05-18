@@ -14,6 +14,8 @@ export default class Assign extends React.Component {
       unassigned: [],
       leader: false
     };
+    
+    this.startGame = this.startGame.bind(this);
   }
 
   componentWillMount() {
@@ -21,20 +23,21 @@ export default class Assign extends React.Component {
     let teamTwo = [];
     let unassigned = [];
     let leader = false;
-    for (let i = 0; i < this.props.players.length; i++) {
-      if (this.props.players[i].team === null) {
-        unassigned.push(this.props.players[i]);
-      } else if (this.props.players[i].team === 1) {
-        teamOne.push(this.props.players[i]);
-      } else if (this.props.players[i].team === 2) {
-        teamTwo.push(this.props.players[i]);
+    let arr = this.props.game.players;
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i].team === null) {
+        unassigned.push(arr[i]);
+      } else if (arr[i].team === 1) {
+        teamOne.push(arr[i]);
+      } else if (arr[i].team === 2) {
+        teamTwo.push(arr[i]);
       }
 
-      if (this.props.players[i].name === this.props.playerName) {
-        leader = this.props.players[i].leader;
+      if (arr[i].name === this.props.playerName) {
+        leader = arr[i].leader;
       }
     }
-    console.log(leader);
+    
     this.setState({
       teamOne: teamOne,
       teamTwo: teamTwo,
@@ -48,17 +51,18 @@ export default class Assign extends React.Component {
     let teamTwo = [];
     let unassigned = [];
     let leader = false;
-    for (let i = 0; i < this.props.players.length; i++) {
-      if (this.props.players[i].team === null) {
-        unassigned.push(this.props.players[i]);
-      } else if (this.props.players[i].team === 1) {
-        teamOne.push(this.props.players[i]);
-      } else if (this.props.players[i].team === 2) {
-        teamTwo.push(this.props.players[i]);
+    let arr = this.props.game.players;
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i].team === null) {
+        unassigned.push(arr[i]);
+      } else if (arr[i].team === 1) {
+        teamOne.push(arr[i]);
+      } else if (arr[i].team === 2) {
+        teamTwo.push(arr[i]);
       }
 
-      if (this.props.players[i].name === this.props.playerName) {
-        leader = this.props.players[i].leader;
+      if (arr[i].name === this.props.playerName) {
+        leader = arr[i].leader;
       }
     }
     if (
@@ -117,6 +121,18 @@ export default class Assign extends React.Component {
       });
     }
   };
+
+  startGame = () => {
+    if (this.state.teamOne.length < 3 || this.state.teamTwo.length < 3) {
+      alert("There are not enough players on each team");
+    } else if (this.state.teamOne.length !== this.state.teamTwo.length) {
+      alert("There are not an equal number of players on each team");
+    } else if (this.state.unassigned.length > 0) {
+      alert("Not all players have been assigned a team");
+    } else {
+      this.props.socket.emit('start');
+    }
+  }
 
   render() {
     return (
@@ -218,7 +234,7 @@ export default class Assign extends React.Component {
           </DragDropContext>
         </Row>
         { this.state.leader &&
-        <Button className="assignButton" type="primary" onClick={this.showTransferModal} size="large">
+        <Button className="assignButton" type="primary" onClick={this.startGame} size="large">
           Start Game
         </Button>
         } 

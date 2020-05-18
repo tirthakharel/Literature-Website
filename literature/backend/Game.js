@@ -1,26 +1,21 @@
 const Player = require('./player');
 const Deck = require('./deck');
 
-function Game(io, code) {
+function Game(code) {
   this.code = code;
-  this.io = io;
   this.players = [];
   this.playerMap = new Map();
-  this.scoreTeam0 = 0;
   this.scoreTeam1 = 0;
+  this.scoreTeam2 = 0;
   this.started = false;
 
   this.deck = new Deck();
 }
 
 Game.prototype.start = function start() {
-  if (this.players.length === 6 || this.players.length === 8) {
-    this.started = true;
-    this.deck.deal(this.players);
-    this.players[0].isTurn = true;
-  } else {
-    // show alert (not enough/too many players)
-  }
+  this.started = true;
+  this.deck.deal(this.players);
+  this.players[0].isTurn = true;
 }
 
 Game.prototype.addPlayer = function addPlayer(id, name) {
@@ -85,10 +80,10 @@ Game.prototype.declare = function declare(playerName, map, set) {
       for (let i = 0; i < cards.length; i++) {
         if (!teammate.hasCard(cards[i])) {
           // incorrect declare
-          if (player.team === 0) {
-            this.scoreTeam1++;
+          if (player.team === 1) {
+            this.scoreTeam2++;
           } else {
-            this.scoreTeam0++;
+            this.scoreTeam1++;
           }
           this.deleteCards(set);
           return;
@@ -96,10 +91,10 @@ Game.prototype.declare = function declare(playerName, map, set) {
       }
     }
     // correct declare
-    if (player.team === 0) {
-      this.scoreTeam0++;
-    } else {
+    if (player.team === 1) {
       this.scoreTeam1++;
+    } else {
+      this.scoreTeam2++;
     }
     this.deleteCards(set);
   }

@@ -8,9 +8,9 @@ export default class GameForm extends React.Component {
 
   onFinish = values => {
     let name = values.name;
-    let room = values.gameCode;
+    let code = values.gameCode;
     if (this.props.text === "Join Game") {
-      this.props.socket.emit('join', { name, room }, (response) => {
+      this.props.socket.emit('join', { name, code }, (response) => {
         if (response.error) {
           alert(response.error);
         } else {
@@ -18,7 +18,7 @@ export default class GameForm extends React.Component {
         }
       });
     } else if (this.props.text === "Create Game") {
-      this.props.socket.emit('create', { name, room }, (response) => {
+      this.props.socket.emit('create', { name, code }, (response) => {
         if (response.error) {
           alert(response.error);
         } else {

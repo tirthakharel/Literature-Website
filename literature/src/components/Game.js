@@ -16,42 +16,8 @@ import Card from './Card';
 
 const { Option } = Select;
 
-const teamOneData = [
-  {
-    name: 'Praneeth',
-    numCards: 9,
-  },
-  {
-    name: 'Ishaan',
-    numCards: 9,
-  },
-  {
-    name: 'Tirtha',
-    numCards: 9,
-  },
-  {
-    name: 'Ashwin',
-    numCards: 9,
-  },
-];
-const teamTwoData = [
-  {
-    name: 'Aditya',
-    numCards: 9,
-  },
-  {
-    name: 'Rahul',
-    numCards: 9,
-  },
-  {
-    name: 'Arjun',
-    numCards: 9,
-  },
-  {
-    name: 'Ritvik',
-    numCards: 9,
-  },
-];
+let teamOneData = [];
+let teamTwoData = [];
 
 export default class Game extends React.Component {
   constructor(props) {
@@ -66,7 +32,53 @@ export default class Game extends React.Component {
       declareVisible: false,
       declareCards: [],
       transferVisible: false,
+      teamOneData: [],
+      teamTwoData: [],
+      cards: []
     };
+  }
+
+  componentWillMount() {
+    let teamOne = [];
+    let teamTwo = [];
+    let arr = this.props.game.players;
+    console.log(arr);
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i].team === 1) {
+        teamOne.push(arr[i]);
+      } else if (arr[i].team === 2) {
+        teamTwo.push(arr[i]);
+      }
+      if (arr[i].name === this.props.playerName) {
+        this.setState({ cards: arr[i].hand });
+      }
+    }
+    this.setState({
+      teamOneData: teamOne,
+      teamTwoData: teamTwo,
+    });
+  }
+
+  componentWillUpdate(prevProps, prevState) {
+    let teamOne = [];
+    let teamTwo = [];
+    let arr = this.props.game.players;
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i].team === 1) {
+        teamOne.push(arr[i]);
+      } else if (arr[i].team === 2) {
+        teamTwo.push(arr[i]);
+      }
+    }
+    if (
+      teamOne.length !== prevState.teamOneData.length ||
+      teamTwo.length !== prevState.teamTwoData.length
+    ) {
+      this.setState({
+        teamOneData: teamOne,
+        teamTwoData: teamTwo,
+      });
+    }
   }
 
   //Ask Modal Events
@@ -211,8 +223,8 @@ export default class Game extends React.Component {
         />
         <Row className="gameRow">
           <Col className="teamCol" lg={5} md={6}>
-            <TeamInfo name="Team One" score={0} data={teamOneData} />
-            <TeamInfo name="Team Two" score={0} data={teamTwoData} />
+            <TeamInfo name="Team One" score={this.props.game.scoreTeam1} data={this.state.teamOneData} />
+            <TeamInfo name="Team Two" score={this.props.game.scoreTeam2} data={this.state.teamTwoData} />
           </Col>
           <Col lg={17} md={16} className="gameCol">
             <Row
@@ -224,7 +236,7 @@ export default class Game extends React.Component {
               <h1 className="log">
                 Ishaan asked for the 9 of clubs from Praneeth
               </h1>
-              <Board />
+              <Board cards={this.state.cards} />
               <div className="buttonrow">
                 <Button type="primary" onClick={this.showAskModal} size="large">
                   <QuestionOutlined />

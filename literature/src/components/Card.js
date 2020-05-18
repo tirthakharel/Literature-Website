@@ -20,12 +20,11 @@ export default class Card extends React.Component {
   }
 
   componentDidMount() {
-    const { rank, suit, set } = this.props;
-
-    let path = `./${set.replace(/ /g, '_')}/${rank.charAt(0)}${suit.charAt(
-      0
-    )}.png`;
-
+    let { rank, suit, set } = this.props;
+    if (rank !== "10") {
+      rank = rank.charAt(0);
+    }
+    let path = `./${set.replace(/ /g, '_')}/${rank}${suit.charAt(0)}.png`;
     this.setState({ path });
   }
 

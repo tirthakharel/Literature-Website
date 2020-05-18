@@ -60,40 +60,23 @@ export default class Game extends React.Component {
     this.state = {
       play: false,
       askVisible: false,
-      declareVisible: false,
-      transferVisible: false,
+      askPlayer: null,
+      askCard: null,
       availableCards: [],
+      declareVisible: false,
+      declareCards: [],
+      transferVisible: false,
     };
   }
 
+  //Ask Modal Events
   showAskModal = () => {
     this.setState({
       askVisible: true,
     });
   };
 
-  showDeclareModal = () => {
-    this.setState({
-      declareVisible: true,
-    });
-  };
-
-  showTransferModal = () => {
-    this.setState({
-      transferVisible: true,
-    });
-  };
-
-  handleOk = e => {
-    console.log(e);
-    this.setState({
-      askVisible: false,
-      declareVisible: false,
-      transferVisible: false,
-    });
-  };
-
-  handleCancel = e => {
+  handleAsk = e => {
     console.log(e);
     this.setState({
       askVisible: false,
@@ -133,8 +116,89 @@ export default class Game extends React.Component {
         }
       ]
     });
-
   }
+
+  //Declare Modal Events
+  showDeclareModal = () => {
+    this.setState({
+      declareVisible: true,
+    });
+  };
+
+  handleDeclare = e => {
+    console.log(e);
+    this.setState({
+      askVisible: false,
+      declareVisible: false,
+      transferVisible: false,
+    });
+  };
+
+  handleDeclareSelect = e => {
+    console.log(e);
+    //send set name to backend
+
+    //receive set of available cards
+
+    //set state to that list of cards
+    this.setState({
+      declareCards: [
+        { rank: '2', 
+          suit: 'Clubs',
+          set: 'Low Clubs',
+        },
+        { rank: '3', 
+          suit: 'Clubs',
+          set: 'Low Clubs',
+        },
+        { rank: '4', 
+          suit: 'Clubs',
+          set: 'Low Clubs',
+        },
+        { rank: '5', 
+          suit: 'Clubs',
+          set: 'Low Clubs',
+        },
+        { rank: '6', 
+          suit: 'Clubs',
+          set: 'Low Clubs',
+        },
+        { rank: '7', 
+          suit: 'Clubs',
+          set: 'Low Clubs',
+        }
+      ]
+    });
+  }
+
+  handleDeclareMap(e) {
+    console.log(e.target.value);
+  }
+
+  //Transfer Modal Events
+  showTransferModal = () => {
+    this.setState({
+      transferVisible: true,
+    });
+  };
+
+  handleTransfer = e => {
+    console.log(e);
+    this.setState({
+      askVisible: false,
+      declareVisible: false,
+      transferVisible: false,
+    });
+  };
+
+  handleCancel = e => {
+    console.log(e);
+    this.setState({
+      askVisible: false,
+      declareVisible: false,
+      transferVisible: false,
+    });
+  };
 
   render() {
     return (
@@ -178,8 +242,17 @@ export default class Game extends React.Component {
               <Modal
                 title="Ask For a Card"
                 visible={this.state.askVisible}
-                onOk={this.handleOk}
-                onCancel={this.handleCancel}>
+                onOk={this.handleAsk}
+                onCancel={this.handleCancel}
+                footer={[
+                  <Button key="cancel" onClick={this.handleCancel}>
+                    Cancel
+                  </Button>,
+                  <Button key="ask" type="primary" onClick={this.handleAsk}>
+                    Ask
+                  </Button>,
+                ]}
+                >
                   <Row align="middle" justify="center" style={{ marginBottom: '20px'}}>
                     <Radio.Group defaultValue="a" buttonStyle="solid">
                       <Radio.Button value="a">Ishaan</Radio.Button>
@@ -212,24 +285,73 @@ export default class Game extends React.Component {
                   </Row>
               </Modal>
               <Modal
-                title="Declare a set"
+                title="Declare a Set"
                 visible={this.state.declareVisible}
-                onOk={this.handleOk}
+                onOk={this.handleDeclare}
                 onCancel={this.handleCancel}
+                footer={[
+                  <Button key="cancel" onClick={this.handleCancel}>
+                    Cancel
+                  </Button>,
+                  <Button key="ask" type="primary" onClick={this.handleDeclare}>
+                    Declare
+                  </Button>,
+                ]}
               >
-                <p>Some contents...</p>
-                <p>Some contents...</p>
-                <p>Some contents...</p>
+                <Row align="middle" justify="center" style={{ marginBottom: '20px'}}>
+                    <Select
+                      style={{ width: 150 }}
+                      placeholder="Select Set"
+                      onChange={this.handleDeclareSelect}
+                    >
+                      <Option value="LH">Low Hearts</Option>
+                      <Option value="HH">High Hearts</Option>
+                      <Option value="LD">Low Diamonds</Option>
+                      <Option value="HD">High Diamonds</Option>
+                      <Option value="LS">Low Spades</Option>
+                      <Option value="HS">High Spades</Option>
+                      <Option value="LC">Low Clubs</Option>
+                      <Option value="HC">High Clubs</Option>
+                      <Option value="J">Jokers</Option>
+                    </Select>
+                  </Row>
+                  <Row align="middle" justify="center">
+                    
+                    {this.state.declareCards.map((card, index) =>
+                      <div className="declareRow">
+                        <span style={{marginRight: '10px'}}>{card.rank + ' of ' + card.suit}</span>
+                        <Radio.Group onChange={this.handleDeclareMap} name={index} defaultValue="a" buttonStyle="solid">
+                          <Radio.Button value="a">Ishaan</Radio.Button>
+                          <Radio.Button value="b">Ashwin</Radio.Button>
+                          <Radio.Button value="c">Tirtha</Radio.Button>
+                          <Radio.Button value="d">Praneeth</Radio.Button>
+                        </Radio.Group>
+                      </div> 
+                    )}
+                  </Row>
               </Modal>
               <Modal
-                title="Transfer your turn"
+                title="Transfer Your Turn"
                 visible={this.state.transferVisible}
-                onOk={this.handleOk}
+                onOk={this.handleTransfer}
                 onCancel={this.handleCancel}
+                footer={[
+                  <Button key="cancel" onClick={this.handleCancel}>
+                    Cancel
+                  </Button>,
+                  <Button key="ask" type="primary" onClick={this.handleTransfer}>
+                    Transfer
+                  </Button>,
+                ]}
               >
-                <p>Some contents...</p>
-                <p>Some contents...</p>
-                <p>Some contents...</p>
+                <Row align="middle" justify="center">
+                    <Radio.Group defaultValue="a" buttonStyle="solid">
+                      <Radio.Button value="a">Ishaan</Radio.Button>
+                      <Radio.Button value="b">Ashwin</Radio.Button>
+                      <Radio.Button value="c">Tirtha</Radio.Button>
+                      <Radio.Button value="d">Praneeth</Radio.Button>
+                    </Radio.Group>
+                  </Row>
               </Modal>
             </Row>
           </Col>

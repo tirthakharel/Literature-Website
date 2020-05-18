@@ -35,7 +35,7 @@ export default class Card extends React.Component {
         return (
           <div className="askwrapper">
             <label>
-              <input onClick={this.handleAsk} type="radio" name="test" value={this.props.rank + "_" + this.props.suit} checked />
+              <input onClick={this.handleAsk} type="radio" name="test" value={this.props.rank + "_" + this.props.suit} />
               <img width="100%" src={images(`${this.state.path}`)} alt={'card'} />
             </label>
           </div>

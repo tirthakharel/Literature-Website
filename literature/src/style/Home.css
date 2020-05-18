@@ -37,6 +37,10 @@
   height: 100%;
 }
 
+.declareRow:not(:last-child) {
+  margin-bottom: 20px;
+}
+
 .teamPanel {
   flex: 1;
   height: 50%;

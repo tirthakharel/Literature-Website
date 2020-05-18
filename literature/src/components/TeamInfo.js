@@ -5,15 +5,14 @@ import 'antd/dist/antd.css';
 const icons = require.context('../resources/icons');
 
 export default class TeamInfo extends React.Component {
-
   constructor(props) {
     super(props);
 
     this.state = {
       name: this.props.name,
-      scrore: this.props.score,
-      data: this.props.data
-    }
+      score: this.props.score,
+      data: this.props.data,
+    };
   }
 
   render() {
@@ -38,11 +37,11 @@ export default class TeamInfo extends React.Component {
           />
           <div className="declared-sets">
             <img
-              src={icons(`./low_clubs.svg`)}
+              src={icons(`./low_clubs.png`)}
               width="40px"
               alt="declared set"
             />
-            <img src={icons(`./jokers.svg`)} width="40px" alt="declared set" />
+            <img src={icons(`./jokers.png`)} width="60px" alt="declared set" />
           </div>
         </div>
       </Row>

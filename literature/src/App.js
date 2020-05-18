@@ -17,6 +17,7 @@ export default class App extends React.Component {
       play: false,
       players: [],
       code: null,
+      assign: false,
     };
     this.play = this.play.bind(this);
     this.assign = this.assign.bind(this);

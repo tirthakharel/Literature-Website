@@ -60,7 +60,7 @@ io.on('connection', (socket) => {
         if (error) return callback(error);
         socket.join(room);
         io.to(room).emit('gameData', {
-          code: connectionGame.room,
+          code: connectionGame.code,
           players: connectionGame.players,
         });
         callback();
@@ -88,10 +88,35 @@ io.on('connection', (socket) => {
 
     socket.join(room);
     io.to(room).emit('gameData', {
-      code: connectionGame.room,
+      code: connectionGame.code,
       players: connectionGame.players,
     });
     callback();
+  });
+
+  socket.on('assignTeam', ({ player, team }, callback) => {
+    let assignedPlayer = null;
+    for (let i = 0; i < connectionGame.players.length; i++) {
+      if (connectionGame.players[i].name === player.name) {
+        assignedPlayer = connectionGame.players[i];
+      }
+    }
+
+    if (team === 'teamOne') {
+      assignedPlayer.team = 1;
+      console.log('assigned ' + player.name + ' to team 1');
+    } else if (team === 'teamTwo') {
+      assignedPlayer.team = 2;
+      console.log('assigned ' + player.name + ' to team 2');
+    } else if (team === 'unassigned') {
+      assignedPlayer.team = null;
+      console.log('assigned ' + player.name + ' to unassigned');
+    }
+
+    io.to(connectionGame.code).emit('gameData', {
+      code: connectionGame.code,
+      players: connectionGame.players,
+    });
   });
 
   socket.on('disconnect', () => {
@@ -102,7 +127,7 @@ io.on('connection', (socket) => {
       } else {
         connectionGame.removePlayer(connectionPlayer.name);
         io.to(connectionGame.code).emit('gameData', {
-          code: connectionGame.room,
+          code: connectionGame.code,
           players: connectionGame.players,
         });
 

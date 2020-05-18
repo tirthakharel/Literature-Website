@@ -9,6 +9,7 @@ export default class GameForm extends React.Component {
   onFinish = values => {
     let name = values.name;
     let code = values.gameCode;
+    
     if (this.props.text === "Join Game") {
       this.props.socket.emit('join', { name, code }, (response) => {
         if (response.error) {

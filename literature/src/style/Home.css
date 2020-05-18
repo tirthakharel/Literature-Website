@@ -124,6 +124,13 @@ h1.team-assign {
   padding: 10px 0;
 }
 
+.assignButton {
+  width: 200px;
+  text-align: center;
+  border-radius: 7.5px;
+  margin-top: 2vh;
+}
+
 @media (max-width: 767px) {
   .teamCol {
     display: inline !important;

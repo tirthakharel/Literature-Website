@@ -10,19 +10,19 @@ export default class GameForm extends React.Component {
     let name = values.name;
     let room = values.gameCode;
     if (this.props.text === "Join Game") {
-      this.props.socket.emit('join', { name, room }, (error) => {
-        if (error) {
-          alert(error);
+      this.props.socket.emit('join', { name, room }, (response) => {
+        if (response.error) {
+          alert(response.error);
         } else {
-          this.props.assign();
+          this.props.assign(response.player);
         }
       });
     } else if (this.props.text === "Create Game") {
-      this.props.socket.emit('create', { name, room }, (error) => {
-        if (error) {
-          alert(error);
+      this.props.socket.emit('create', { name, room }, (response) => {
+        if (response.error) {
+          alert(response.error);
         } else {
-          this.props.assign();
+          this.props.assign(response.player);
         }
       });
     }

@@ -57,24 +57,24 @@ io.on('connection', (socket) => {
         const { error, player } = games[i].addPlayer(socket.id, name);
         if (player) connectionPlayer = player;
 
-        if (error) return callback(error);
+        if (error) return callback({ error: error });
         socket.join(room);
         io.to(room).emit('gameData', {
           code: connectionGame.code,
           players: connectionGame.players,
         });
-        callback();
+        callback({ player: connectionPlayer.name });
       }
     }
     if (!roomFound) {
-      return callback('The game code does not exist');
+      return callback({ error: 'The game code does not exist' });
     }
   });
 
   socket.on('create', ({ name, room }, callback) => {
     for (let i = 0; i < games.length; i++) {
       if (games[i].code === room) {
-        return callback('The game code already exists');
+        return callback({ error: 'The game code already exists' });
       }
     }
 
@@ -91,7 +91,7 @@ io.on('connection', (socket) => {
       code: connectionGame.code,
       players: connectionGame.players,
     });
-    callback();
+    callback({ player: connectionPlayer.name });
   });
 
   socket.on('assignTeam', ({ player, team }, callback) => {
@@ -104,13 +104,10 @@ io.on('connection', (socket) => {
 
     if (team === 'teamOne') {
       assignedPlayer.team = 1;
-      console.log('assigned ' + player.name + ' to team 1');
     } else if (team === 'teamTwo') {
       assignedPlayer.team = 2;
-      console.log('assigned ' + player.name + ' to team 2');
     } else if (team === 'unassigned') {
       assignedPlayer.team = null;
-      console.log('assigned ' + player.name + ' to unassigned');
     }
 
     io.to(connectionGame.code).emit('gameData', {

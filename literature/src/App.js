@@ -14,8 +14,9 @@ export default class App extends React.Component {
     super(props);
 
     this.state = {
-      play: true,
+      play: false,
       players: [],
+      playerName: null,
       code: null,
       assign: false,
     };
@@ -25,8 +26,11 @@ export default class App extends React.Component {
   play() {
     this.setState({ play: true });
   }
-  assign() {
-    this.setState({ assign: true });
+  assign(playerName) {
+    this.setState({ 
+      assign: true, 
+      playerName: playerName
+    });
   }
 
   componentWillMount() {
@@ -44,7 +48,7 @@ export default class App extends React.Component {
         {this.state.play ? (
           <Game />
         ) : this.state.assign ? (
-          <Assign players={this.state.players} socket={this.socket} />
+          <Assign playerName={this.state.playerName} players={this.state.players} socket={this.socket} />
         ) : (
           <Home socket={this.socket} assign={this.assign} />
         )}

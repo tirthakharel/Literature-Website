@@ -12,13 +12,15 @@ export default class Assign extends React.Component {
       teamOne: [],
       teamTwo: [],
       unassigned: [],
+      leader: false
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
     let teamOne = [];
     let teamTwo = [];
     let unassigned = [];
+    let leader = false;
     for (let i = 0; i < this.props.players.length; i++) {
       if (this.props.players[i].team === null) {
         unassigned.push(this.props.players[i]);
@@ -27,15 +29,25 @@ export default class Assign extends React.Component {
       } else if (this.props.players[i].team === 2) {
         teamTwo.push(this.props.players[i]);
       }
-    }
 
-    this.setState({ teamOne, teamTwo, unassigned });
+      if (this.props.players[i].name === this.props.playerName) {
+        leader = this.props.players[i].leader;
+      }
+    }
+    console.log(leader);
+    this.setState({
+      teamOne: teamOne,
+      teamTwo: teamTwo,
+      unassigned: unassigned,
+      leader: leader
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {
     let teamOne = [];
     let teamTwo = [];
     let unassigned = [];
+    let leader = false;
     for (let i = 0; i < this.props.players.length; i++) {
       if (this.props.players[i].team === null) {
         unassigned.push(this.props.players[i]);
@@ -44,16 +56,22 @@ export default class Assign extends React.Component {
       } else if (this.props.players[i].team === 2) {
         teamTwo.push(this.props.players[i]);
       }
+
+      if (this.props.players[i].name === this.props.playerName) {
+        leader = this.props.players[i].leader;
+      }
     }
     if (
       teamOne.length !== prevState.teamOne.length ||
       teamTwo.length !== prevState.teamTwo.length ||
-      unassigned.length !== prevState.unassigned.length
+      unassigned.length !== prevState.unassigned.length ||
+      leader !== prevState.leader
     ) {
       this.setState({
         teamOne: teamOne,
         teamTwo: teamTwo,
         unassigned: unassigned,
+        leader: leader
       });
     }
   }
@@ -106,9 +124,13 @@ export default class Assign extends React.Component {
         <img
           src={logo}
           alt="Literature logo"
-          style={{ marginBottom: '5vh', marginTop: '10vh' }}
+          style={{ marginBottom: '3vh', marginTop: '7vh' }}
           width="550px"
         />
+        { this.state.leader ? 
+        <h2>Drag and drop names to assign teams below</h2> :
+        <h2>Waiting for the game leader to assign teams...</h2> 
+        }
         <Row style={{ width: '100%', height: 'auto' }}>
           <DragDropContext onDragEnd={this.onDragEnd}>
             <Droppable droppableId="teamOne">
@@ -120,6 +142,7 @@ export default class Assign extends React.Component {
                       key={item.id}
                       draggableId={item.id}
                       index={index}
+                      isDragDisabled={!this.state.leader}
                     >
                       {(provided, snapshot) => (
                         <div
@@ -147,6 +170,7 @@ export default class Assign extends React.Component {
                       key={item.id}
                       draggableId={item.id}
                       index={index}
+                      isDragDisabled={!this.state.leader}
                     >
                       {(provided, snapshot) => (
                         <div
@@ -173,6 +197,7 @@ export default class Assign extends React.Component {
                       key={item.id}
                       draggableId={item.id}
                       index={index}
+                      isDragDisabled={!this.state.leader}
                     >
                       {(provided, snapshot) => (
                         <div
@@ -192,9 +217,11 @@ export default class Assign extends React.Component {
             </Droppable>
           </DragDropContext>
         </Row>
-        <Button type="primary" onClick={this.showTransferModal} size="large">
-          Let's start the game
+        { this.state.leader &&
+        <Button className="assignButton" type="primary" onClick={this.showTransferModal} size="large">
+          Start Game
         </Button>
+        } 
       </Row>
     );
   }

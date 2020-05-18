@@ -1,7 +1,8 @@
 import React from 'react';
-import { Row, Col, Button, Modal } from 'antd';
+import { Row, Col, Button, Modal, Radio, Select } from 'antd';
 import {
   QuestionCircleOutlined,
+  UserOutlined,
   BellOutlined,
   SwapOutlined,
   QuestionOutlined,
@@ -11,6 +12,9 @@ import '../style/Home.css';
 import logo from '../lit-logo.png';
 import TeamInfo from './TeamInfo.js';
 import Board from './Board';
+import Card from './Card';
+
+const { Option } = Select;
 
 const teamOneData = [
   {
@@ -57,7 +61,8 @@ export default class Game extends React.Component {
       play: false,
       askVisible: false,
       declareVisible: false,
-      transferVisible: false
+      transferVisible: false,
+      availableCards: [],
     };
   }
 
@@ -66,16 +71,19 @@ export default class Game extends React.Component {
       askVisible: true,
     });
   };
+
   showDeclareModal = () => {
     this.setState({
       declareVisible: true,
     });
   };
+
   showTransferModal = () => {
     this.setState({
       transferVisible: true,
     });
   };
+
   handleOk = e => {
     console.log(e);
     this.setState({
@@ -84,6 +92,7 @@ export default class Game extends React.Component {
       transferVisible: false,
     });
   };
+
   handleCancel = e => {
     console.log(e);
     this.setState({
@@ -92,6 +101,40 @@ export default class Game extends React.Component {
       transferVisible: false,
     });
   };
+
+  handleSetSelect = e => {
+    console.log(e);
+    //send set name to backend
+
+    //receive set of available cards
+
+    //set state to that list of cards
+    this.setState({
+      availableCards: [
+        { rank: '2', 
+          suit: 'Clubs',
+          set: 'Low Clubs',
+        },
+        { rank: '3', 
+          suit: 'Clubs',
+          set: 'Low Clubs',
+        },
+        { rank: '4', 
+          suit: 'Clubs',
+          set: 'Low Clubs',
+        },
+        { rank: '5', 
+          suit: 'Clubs',
+          set: 'Low Clubs',
+        },
+        { rank: '6', 
+          suit: 'Clubs',
+          set: 'Low Clubs',
+        }
+      ]
+    });
+
+  }
 
   render() {
     return (
@@ -133,14 +176,40 @@ export default class Game extends React.Component {
                 </Button>
               </div>
               <Modal
-                title="Ask for a card"
+                title="Ask For a Card"
                 visible={this.state.askVisible}
                 onOk={this.handleOk}
-                onCancel={this.handleCancel}
-              >
-                <p>Some contents...</p>
-                <p>Some contents...</p>
-                <p>Some contents...</p>
+                onCancel={this.handleCancel}>
+                  <Row align="middle" justify="center" style={{ marginBottom: '20px'}}>
+                    <Radio.Group defaultValue="a" buttonStyle="solid">
+                      <Radio.Button value="a">Ishaan</Radio.Button>
+                      <Radio.Button value="b">Ashwin</Radio.Button>
+                      <Radio.Button value="c">Tirtha</Radio.Button>
+                      <Radio.Button value="d">Praneeth</Radio.Button>
+                    </Radio.Group>
+                  </Row>
+                  <Row align="middle" justify="center" style={{ marginBottom: '20px'}}>
+                    <Select
+                      style={{ width: 150 }}
+                      placeholder="Select Set"
+                      onChange={this.handleSetSelect}
+                    >
+                      <Option value="LH">Low Hearts</Option>
+                      <Option value="HH">High Hearts</Option>
+                      <Option value="LD">Low Diamonds</Option>
+                      <Option value="HD">High Diamonds</Option>
+                      <Option value="LS">Low Spades</Option>
+                      <Option value="HS">High Spades</Option>
+                      <Option value="LC">Low Clubs</Option>
+                      <Option value="HC">High Clubs</Option>
+                      <Option value="J">Jokers</Option>
+                    </Select>
+                  </Row>
+                  <Row align="middle" justify="center">
+                    {this.state.availableCards.map((card) => 
+                      <Card type='ask' suit={card.suit} rank={card.rank} set={card.set} />
+                    )}
+                  </Row>
               </Modal>
               <Modal
                 title="Declare a set"

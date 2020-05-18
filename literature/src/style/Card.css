@@ -3,8 +3,35 @@
   margin-bottom: 5px;
 }
 
+.askwrapper {
+  width: 80px;
+  margin-bottom: 5px;
+}
+
 .cardwrapper:not(:last-child) {
   margin-right: 5px;
+}
+
+.askwrapper:not(:last-child) {
+  margin-right: 5px;
+}
+
+[type=radio] { 
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* IMAGE STYLES */
+[type=radio] + img {
+  cursor: pointer;
+}
+
+/* CHECKED STYLES */
+[type=radio]:checked + img {
+  box-shadow: 0 0 0 1.5pt #1890FF;
+  border-radius: 7.5px;
 }
 
 .cardrow {

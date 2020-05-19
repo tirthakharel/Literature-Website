@@ -386,15 +386,9 @@ export default class Game extends React.Component {
                       placeholder="Select Set"
                       onChange={this.handleDeclareSelect}
                     >
-                      <Option value="Low Hearts">Low Hearts</Option>
-                      <Option value="High Hearts">High Hearts</Option>
-                      <Option value="Low Diamonds">Low Diamonds</Option>
-                      <Option value="High Diamonds">High Diamonds</Option>
-                      <Option value="Low Spades">Low Spades</Option>
-                      <Option value="High Spades">High Spades</Option>
-                      <Option value="Low Clubs">Low Clubs</Option>
-                      <Option value="High Clubs">High Clubs</Option>
-                      <Option value="Jokers">Jokers</Option>
+                      {this.state.availableSets.map((set) => 
+                        <Option value={set}>{set}</Option>
+                      )}                       
                     </Select>
                   </Row>
                   <Row align="middle" justify="center">
@@ -402,11 +396,14 @@ export default class Game extends React.Component {
                     {this.state.declareCards.map((card, index) =>
                       <div className="declareRow">
                         <span style={{marginRight: '10px'}}>{card.rank + ' of ' + card.suit}</span>
-                        <Radio.Group onChange={this.handleDeclareMap} name={index} defaultValue="a" buttonStyle="solid">
-                          <Radio.Button value="a">Ishaan</Radio.Button>
-                          <Radio.Button value="b">Ashwin</Radio.Button>
-                          <Radio.Button value="c">Tirtha</Radio.Button>
-                          <Radio.Button value="d">Praneeth</Radio.Button>
+                        <Radio.Group onChange={this.handleDeclareMap} name={index} buttonStyle="solid">
+                          {this.props.game.players.map((player) => {
+                            if (player.name !== this.props.playerName && player.team === this.state.team) {
+                              return <Radio.Button value={player.name}>{player.name}</Radio.Button>;
+                            }
+
+                            return <span></span>;
+                          })}
                         </Radio.Group>
                       </div> 
                     )}

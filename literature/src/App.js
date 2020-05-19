@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
 import Home from './components/Home';
 import Game from './components/Game';
 import Assign from './components/Assign';
@@ -23,15 +22,31 @@ export default class App extends React.Component {
   }
 
   assign(playerName) {
-    this.setState({ 
-      assign: true, 
-      playerName: playerName
+    this.setState({
+      assign: true,
+      playerName: playerName,
     });
   }
 
   componentWillMount() {
     this.socket = io(connection);
+
+    let persistentData = window.localStorage.getItem('lit-game-user');
+
+    if (persistentData !== null) {
+      let info = JSON.parse(persistentData);
+      let user = info.user;
+      let game = info.gameCode;
+      console.log(info);
+      this.socket.emit('reconnect', { user, game }, (err) => {
+        if (err) {
+          window.localStorage.removeItem('lit-game-user');
+        }
+      });
+    }
+
     this.socket.on('gameData', (data) => {
+      console.log('received game data');
       this.setState({ game: data.game });
       if (data.game.started) {
         this.setState({ play: true });
@@ -46,16 +61,16 @@ export default class App extends React.Component {
     return (
       <div className="background">
         {this.state.play ? (
-          <Game 
-            playerName={this.state.playerName} 
-            game={this.state.game} 
-            socket={this.socket} 
-        /> 
+          <Game
+            playerName={this.state.playerName}
+            game={this.state.game}
+            socket={this.socket}
+          />
         ) : this.state.assign ? (
-          <Assign 
-            playerName={this.state.playerName} 
-            game={this.state.game} 
-            socket={this.socket} 
+          <Assign
+            playerName={this.state.playerName}
+            game={this.state.game}
+            socket={this.socket}
           />
         ) : (
           <Home socket={this.socket} assign={this.assign} />

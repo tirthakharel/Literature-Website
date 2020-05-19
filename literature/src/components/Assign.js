@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, List, Button } from 'antd';
+import { Row, Button } from 'antd';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import logo from '../lit-logo.png';
 import '../style/Home.css';
@@ -12,9 +12,9 @@ export default class Assign extends React.Component {
       teamOne: [],
       teamTwo: [],
       unassigned: [],
-      leader: false
+      leader: false,
     };
-    
+
     this.startGame = this.startGame.bind(this);
   }
 
@@ -37,12 +37,12 @@ export default class Assign extends React.Component {
         leader = arr[i].leader;
       }
     }
-    
+
     this.setState({
       teamOne: teamOne,
       teamTwo: teamTwo,
       unassigned: unassigned,
-      leader: leader
+      leader: leader,
     });
   }
 
@@ -75,7 +75,7 @@ export default class Assign extends React.Component {
         teamOne: teamOne,
         teamTwo: teamTwo,
         unassigned: unassigned,
-        leader: leader
+        leader: leader,
       });
     }
   }
@@ -124,15 +124,15 @@ export default class Assign extends React.Component {
 
   startGame = () => {
     if (this.state.teamOne.length < 3 || this.state.teamTwo.length < 3) {
-      alert("There are not enough players on each team");
+      alert('There are not enough players on each team');
     } else if (this.state.teamOne.length !== this.state.teamTwo.length) {
-      alert("There are not an equal number of players on each team");
+      alert('There are not an equal number of players on each team');
     } else if (this.state.unassigned.length > 0) {
-      alert("Not all players have been assigned a team");
+      alert('Not all players have been assigned a team');
     } else {
       this.props.socket.emit('start');
     }
-  }
+  };
 
   render() {
     return (
@@ -143,10 +143,11 @@ export default class Assign extends React.Component {
           style={{ marginBottom: '3vh', marginTop: '7vh' }}
           width="550px"
         />
-        { this.state.leader ? 
-        <h2>Drag and drop names to assign teams below</h2> :
-        <h2>Waiting for the game leader to assign teams...</h2> 
-        }
+        {this.state.leader ? (
+          <h2>Drag and drop names to assign teams below</h2>
+        ) : (
+          <h2>Waiting for the game leader to assign teams...</h2>
+        )}
         <Row style={{ width: '100%', height: 'auto' }}>
           <DragDropContext onDragEnd={this.onDragEnd}>
             <Droppable droppableId="teamOne">
@@ -233,11 +234,16 @@ export default class Assign extends React.Component {
             </Droppable>
           </DragDropContext>
         </Row>
-        { this.state.leader &&
-        <Button className="assignButton" type="primary" onClick={this.startGame} size="large">
-          Start Game
-        </Button>
-        } 
+        {this.state.leader && (
+          <Button
+            className="assignButton"
+            type="primary"
+            onClick={this.startGame}
+            size="large"
+          >
+            Start Game
+          </Button>
+        )}
       </Row>
     );
   }

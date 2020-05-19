@@ -1,6 +1,5 @@
 import React from 'react';
 import '../style/Card.css';
-import { Button } from 'antd';
 const images = require.context('../resources/cards', true);
 
 export default class Card extends React.Component {
@@ -9,13 +8,13 @@ export default class Card extends React.Component {
 
     this.state = {
       path: '',
-      clicked: false
+      clicked: false,
     };
   }
 
   componentDidMount() {
     let { rank, suit, set } = this.props;
-    if (rank !== "10") {
+    if (rank !== '10') {
       rank = rank.charAt(0);
     }
     let path = `./${set.replace(/ /g, '_')}/${rank}${suit.charAt(0)}.png`;
@@ -24,7 +23,7 @@ export default class Card extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     let { rank, suit, set } = this.props;
-    if (rank !== "10") {
+    if (rank !== '10') {
       rank = rank.charAt(0);
     }
     let path = `./${set.replace(/ /g, '_')}/${rank}${suit.charAt(0)}.png`;
@@ -39,14 +38,19 @@ export default class Card extends React.Component {
         return (
           <div className="askwrapper">
             <label>
-              <input 
-                onClick={this.props.clickFunc} 
-                type="radio" name="test" 
-                data-suit={this.props.suit} 
+              <input
+                onClick={this.props.clickFunc}
+                type="radio"
+                name="test"
+                data-suit={this.props.suit}
                 data-rank={this.props.rank}
-                data-set={this.props.set} 
+                data-set={this.props.set}
               />
-              <img width="100%" src={images(`${this.state.path}`)} alt={'card'} />
+              <img
+                width="100%"
+                src={images(`${this.state.path}`)}
+                alt={'card'}
+              />
             </label>
           </div>
         );

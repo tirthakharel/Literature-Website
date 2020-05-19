@@ -5,29 +5,44 @@ import '../style/Home.css';
 import 'antd/dist/antd.css';
 
 export default class GameForm extends React.Component {
-
-  onFinish = values => {
+  onFinish = (values) => {
     let name = values.name;
     let code = values.gameCode;
-    
-    if (this.props.text === "Join Game") {
+
+    if (this.props.text === 'Join Game') {
       this.props.socket.emit('join', { name, code }, (response) => {
         if (response.error) {
           alert(response.error);
         } else {
+          const playerID = response.id;
+          const code = response.code;
+
+          const persistentData = { user: playerID, gameCode: code };
+          window.localStorage.setItem(
+            'lit-game-user',
+            JSON.stringify(persistentData)
+          );
           this.props.assign(response.player);
         }
       });
-    } else if (this.props.text === "Create Game") {
+    } else if (this.props.text === 'Create Game') {
       this.props.socket.emit('create', { name, code }, (response) => {
         if (response.error) {
           alert(response.error);
         } else {
+          const playerID = response.id;
+          const code = response.code;
+
+          const persistentData = { user: playerID, gameCode: code };
+          window.localStorage.setItem(
+            'lit-game-user',
+            JSON.stringify(persistentData)
+          );
           this.props.assign(response.player);
         }
       });
     }
-  }
+  };
 
   render() {
     return (

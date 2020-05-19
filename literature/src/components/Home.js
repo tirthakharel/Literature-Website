@@ -1,11 +1,10 @@
 import React from 'react';
-import { Row, Col, Collapse, Tabs } from 'antd';
+import { Row, Col, Tabs } from 'antd';
 import 'antd/dist/antd.css';
 import '../style/Home.css';
 import GameForm from './GameForm.js';
 import logo from '../lit-logo.png';
 
-const { Panel } = Collapse;
 const { TabPane } = Tabs;
 
 export default class Home extends React.Component {
@@ -75,11 +74,16 @@ export default class Home extends React.Component {
                   style={{ width: '75%', marginTop: '10%' }}
                 >
                   <TabPane tab="Setup" key="1">
-                    <p style={{marginBottom: '3px'}}><b>Players:</b> 6, 8, or 10</p>
-                    <p style={{marginBottom: '3px'}}><b>Deck:</b> 52 Card Deck + 2 Jokers</p> 
+                    <p style={{ marginBottom: '3px' }}>
+                      <b>Players:</b> 6, 8, or 10
+                    </p>
+                    <p style={{ marginBottom: '3px' }}>
+                      <b>Deck:</b> 52 Card Deck + 2 Jokers
+                    </p>
                     <p>
-                      Literature, or Fish, is a strategic turn-based card game. The game is comprised
-                      of two teams whose objective is to win 5 sets. 
+                      Literature, or Fish, is a strategic turn-based card game.
+                      The game is comprised of two teams whose objective is to
+                      win 5 sets.
                     </p>
                   </TabPane>
                   <TabPane tab="Ask" key="2">

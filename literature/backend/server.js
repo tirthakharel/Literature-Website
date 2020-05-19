@@ -46,6 +46,41 @@ io.on('connection', (socket) => {
   let connectionPlayer = null;
   let connectionGame = null;
 
+  socket.on('reconnect', ({ id, code }, callback) => {
+    let codeFound = false;
+    let playerFound = false;
+
+    console.log('attempting reconnect');
+
+    for (let i = 0; i < games.length && !codeFound; i++) {
+      if (games[i].code === code) {
+        codeFound = true;
+        connectionGame = games[i];
+        console.log('code found');
+
+        let players = games[i].players;
+
+        for (let j = 0; j < players.length && !playerFound; j++) {
+          if (players[j].id === id) {
+            playerFound = true;
+            players[j].connected = true;
+            console.log('player found');
+
+            socket.join(code);
+
+            io.to(code).emit('gameData', {
+              game: connectionGame,
+            });
+          }
+        }
+      }
+    }
+
+    if (!codeFound || !playerFound) {
+      return callback({ error: 'not valid' });
+    }
+  });
+
   socket.on('join', ({ name, code }, callback) => {
     let codeFound = false;
     console.log(code);
@@ -63,7 +98,11 @@ io.on('connection', (socket) => {
         io.to(code).emit('gameData', {
           game: connectionGame,
         });
-        callback({ player: connectionPlayer.name });
+        callback({
+          player: connectionPlayer.name,
+          id: connectionPlayer.id,
+          code: code,
+        });
       }
     }
     if (!codeFound) {
@@ -90,7 +129,11 @@ io.on('connection', (socket) => {
     io.to(code).emit('gameData', {
       game: connectionGame,
     });
-    callback({ player: connectionPlayer.name });
+    callback({
+      player: connectionPlayer.name,
+      id: connectionPlayer.id,
+      code: code,
+    });
   });
 
   socket.on('assignTeam', ({ player, team }, callback) => {
@@ -121,7 +164,7 @@ io.on('connection', (socket) => {
       game: connectionGame,
     });
   });
-  
+
   socket.on('ask', ({ source, target, card }, callback) => {
     console.log(target);
     let asked = connectionGame.ask(source, target, card);

@@ -11,19 +11,27 @@ function Player(id, name) {
   this.isTurn = false;
   this.availableCards = {};
   this.sets = [];
+  this.sockets = [];
 }
 
 Player.prototype.addToHand = function addToHand(card) {
   let rank = card.rank;
   let set = card.set;
-  
+
   let i = 0;
 
-  while (i < this.hand.length && setNames.indexOf(set) > setNames.indexOf(this.hand[i].set)) {
+  while (
+    i < this.hand.length &&
+    setNames.indexOf(set) > setNames.indexOf(this.hand[i].set)
+  ) {
     i++;
   }
 
-  while (i < this.hand.length && set === this.hand[i].set && ranks.indexOf(rank) > ranks.indexOf(this.hand[i].rank)) {
+  while (
+    i < this.hand.length &&
+    set === this.hand[i].set &&
+    ranks.indexOf(rank) > ranks.indexOf(this.hand[i].rank)
+  ) {
     i++;
   }
   this.hand.splice(i, 0, card);
@@ -80,9 +88,8 @@ Player.prototype.allAvailableCards = function allAvailableCards() {
   setNames.forEach((stringSet) => {
     res[stringSet] = this.available(stringSet);
   });
-  
-  this.availableCards = res;
 
+  this.availableCards = res;
 };
 
 module.exports = Player;

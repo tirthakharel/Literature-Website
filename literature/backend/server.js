@@ -46,31 +46,34 @@ io.on('connection', (socket) => {
   let connectionPlayer = null;
   let connectionGame = null;
 
-  socket.on('reconnect', ({ id, code }, callback) => {
+  socket.on('reconnectUser', ({ user, game }, callback) => {
     let codeFound = false;
     let playerFound = false;
 
     console.log('attempting reconnect');
 
     for (let i = 0; i < games.length && !codeFound; i++) {
-      if (games[i].code === code) {
+      if (games[i].code === game) {
         codeFound = true;
         connectionGame = games[i];
         console.log('code found');
 
         let players = games[i].players;
 
-        for (let j = 0; j < players.length && !playerFound; j++) {
-          if (players[j].id === id) {
+        for (let j = 0; j < players.length; j++) {
+          if (players[j].id === user) {
             playerFound = true;
             players[j].connected = true;
-            console.log('player found');
+            players[j].sockets.push(socket.id);
+            connectionPlayer = players[j];
+            console.log(connectionPlayer);
 
-            socket.join(code);
+            socket.join(game);
 
-            io.to(code).emit('gameData', {
+            io.to(game).emit('gameData', {
               game: connectionGame,
             });
+            callback({ game: connectionGame, player: connectionPlayer });
           }
         }
       }
@@ -90,7 +93,10 @@ io.on('connection', (socket) => {
 
         // add player to game
         const { error, player } = games[i].addPlayer(socket.id, name);
-        if (player) connectionPlayer = player;
+        if (player) {
+          player.sockets.push(socket.id);
+          connectionPlayer = player;
+        }
 
         if (error) return callback({ error: error });
         socket.join(code);
@@ -121,6 +127,7 @@ io.on('connection', (socket) => {
     connectionGame = game;
 
     const { player } = game.addPlayer(socket.id, name);
+    player.sockets.push(socket.id);
     connectionPlayer = player;
     games.push(game);
 
@@ -190,41 +197,47 @@ io.on('connection', (socket) => {
   socket.on('newGame', () => {
     connectionGame.started = false;
     io.to(connectionGame.code).emit('startNew', {
-      game: connectionGame
+      game: connectionGame,
     });
   });
 
   socket.on('disconnect', () => {
     if (connectionGame != null) {
-      if (connectionGame.started) {
-        connectionPlayer.connected = false;
-        
-        let remove = true;
-        // remove the game if everyone is disconnected
-        for (let i = 0; i < connectionGame.players.length; i++) {
-          if (connectionGame.players[i].connected === true) {
-            remove = false
-          }
-        }
-        if (remove) {
-          for (let i = 0; i < games.length; i++) {
-            if (games[i].code === connectionGame.code) {
-              console.log("Game removed");
-              games.splice(i, 1);
-            }
-          }
-        }
-      } else {
-        connectionGame.removePlayer(connectionPlayer.name);
-        io.to(connectionGame.code).emit('gameData', {
-          game: connectionGame,
-        });
+      connectionPlayer.sockets.splice(
+        connectionPlayer.sockets.indexOf(socket.id),
+        1
+      );
+      if (connectionPlayer.sockets.length === 0) {
+        if (connectionGame.started) {
+          connectionPlayer.connected = false;
 
-        // remove the game if there are no players
-        if (connectionGame.players.length === 0) {
-          for (let i = 0; i < games.length; i++) {
-            if (games[i].code === connectionGame.code) {
-              games.splice(i, 1);
+          let remove = true;
+          // remove the game if everyone is disconnected
+          // for (let i = 0; i < connectionGame.players.length; i++) {
+          //   if (connectionGame.players[i].connected === true) {
+          //     remove = false;
+          //   }
+          // }
+          // if (remove) {
+          //   for (let i = 0; i < games.length; i++) {
+          //     if (games[i].code === connectionGame.code) {
+          //       console.log('Game removed');
+          //       games.splice(i, 1);
+          //     }
+          //   }
+          // }
+        } else {
+          connectionGame.removePlayer(connectionPlayer.name);
+          io.to(connectionGame.code).emit('gameData', {
+            game: connectionGame,
+          });
+
+          // remove the game if there are no players
+          if (connectionGame.players.length === 0) {
+            for (let i = 0; i < games.length; i++) {
+              if (games[i].code === connectionGame.code) {
+                games.splice(i, 1);
+              }
             }
           }
         }

@@ -29,6 +29,7 @@ export default class Game extends React.Component {
       askVisible: false,
       askPlayer: null,
       askCard: null,
+      askSet: 'Select Set',
       availableCards: {},
       availableSetCards: [],
       availableSets: [],
@@ -43,7 +44,7 @@ export default class Game extends React.Component {
       playerTurn: null,
       log: null,
       declareMap: new Array(6),
-      declareSet: null,
+      declareSet: 'Select Set',
       declaredSetsTeamOne: [],
       declaredSetsTeamTwo: [],
     };
@@ -69,6 +70,11 @@ export default class Game extends React.Component {
           availableSets: arr[i].sets,
           log: this.props.game.log,
         });
+        if (arr[i].isTurn) {
+          if (arr[i].hand.length === 0) {
+            this.setState({ transfer: true });
+          }
+        }
       }
       if (arr[i].isTurn) {
         this.setState({ playerTurn: arr[i].name });
@@ -82,7 +88,7 @@ export default class Game extends React.Component {
     });
   }
 
-  componentWillUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     let teamOne = [];
     let teamTwo = [];
     let cards = [];
@@ -92,6 +98,7 @@ export default class Game extends React.Component {
     let team = null;
     let playerTurn = null;
     let arr = this.props.game.players;
+    let transfer = prevState.transfer;
     for (let i = 0; i < arr.length; i++) {
       if (arr[i].team === 1) {
         teamOne.push(arr[i]);
@@ -104,6 +111,11 @@ export default class Game extends React.Component {
         availableCards = arr[i].availableCards;
         team = arr[i].team;
         availableSets = arr[i].sets;
+        if (isTurn) {
+          if (cards.length === 0) {
+            transfer = true;
+          }
+        }
       }
       if (arr[i].isTurn) {
         playerTurn = arr[i].name;
@@ -122,7 +134,8 @@ export default class Game extends React.Component {
         prevState.declaredSetsTeamOne.length ||
       this.props.game.declaredSetsTeam2.length !==
         prevState.declaredSetsTeamTwo.length ||
-      playerTurn !== prevState.playerTurn
+      playerTurn !== prevState.playerTurn ||
+      transfer !== prevState.transfer
     ) {
       this.setState({
         teamOneData: teamOne,
@@ -136,6 +149,7 @@ export default class Game extends React.Component {
         declaredSetsTeamOne: this.props.game.declaredSetsTeam1,
         declaredSetsTeamTwo: this.props.game.declaredSetsTeam2,
         playerTurn: playerTurn,
+        transfer: transfer,
       });
     }
   }
@@ -180,6 +194,7 @@ export default class Game extends React.Component {
           transferVisible: false,
           transfer: false,
           availableSetCards: this.state.availableCards[askedCard.set],
+          askSet: asked ? this.state.askSet : '',
         });
         askedCard = null;
       });
@@ -189,6 +204,7 @@ export default class Game extends React.Component {
   handleSetSelect = (e) => {
     console.log(e);
     this.setState({
+      askSet: e,
       availableSetCards: this.state.availableCards[e],
     });
   };
@@ -221,6 +237,8 @@ export default class Game extends React.Component {
           declareVisible: false,
           transferVisible: false,
           declareMap: new Array(6),
+          declareCards: [],
+          declareSet: '',
         });
       });
     }
@@ -230,6 +248,8 @@ export default class Game extends React.Component {
       declareVisible: false,
       transferVisible: false,
       transfer: true,
+      declareCards: [],
+      declareSet: '',
     });
   };
 
@@ -391,7 +411,11 @@ export default class Game extends React.Component {
                     Declare
                   </Button>
                   <Button
-                    type={this.state.isTurn ? 'primary' : 'disabled'}
+                    type={
+                      this.state.isTurn && this.state.transfer
+                        ? 'primary'
+                        : 'disabled'
+                    }
                     onClick={this.state.isTurn ? this.showTransferModal : ''}
                     size="large"
                   >
@@ -425,10 +449,11 @@ export default class Game extends React.Component {
                       {this.props.game.players.map((player) => {
                         if (
                           player.name !== this.props.playerName &&
-                          player.team !== this.state.team
+                          player.team !== this.state.team &&
+                          player.hand.length > 0
                         ) {
                           return (
-                            <Radio.Button value={player.name}>
+                            <Radio.Button value={player.name} checked={false}>
                               {player.name}
                             </Radio.Button>
                           );
@@ -447,6 +472,11 @@ export default class Game extends React.Component {
                       style={{ width: 150 }}
                       placeholder="Select Set"
                       onChange={this.handleSetSelect}
+                      value={
+                        this.state.askSet === ''
+                          ? 'Select Set'
+                          : this.state.askSet
+                      }
                     >
                       {this.state.availableSets.map((set) => (
                         <Option value={set}>{set}</Option>
@@ -499,6 +529,11 @@ export default class Game extends React.Component {
                       style={{ width: 150 }}
                       placeholder="Select Set"
                       onChange={this.handleDeclareSelect}
+                      value={
+                        this.state.declareSet === ''
+                          ? 'Select Set'
+                          : this.state.declareSet
+                      }
                     >
                       {this.state.availableSets.map((set) => (
                         <Option style={{ marginBottom: '10px' }} value={set}>
@@ -620,6 +655,12 @@ export default class Game extends React.Component {
             </div>
           </Col>
         </Row>
+        <div className="footerRow">
+          <span className="footer-info">
+            Made with &#10084; by Praneeth Alla, Tirtha Kharel, Ashwin Nathan,
+            and Ishaan Rao
+          </span>
+        </div>
       </Row>
     );
   }

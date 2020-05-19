@@ -5,6 +5,19 @@
 }
 .bg {
   flex-direction: column;
+  height: 100vh;
+}
+
+.footerRow {
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
+}
+
+.footer-info {
+  font-weight: 400;
+  color: black;
 }
 
 .homePanel {
@@ -14,12 +27,8 @@
   width: 350px;
 }
 
-.cardrow {
-  
-}
-
 .declared-sets {
-  margin-top: 20px
+  margin-top: 20px;
 }
 
 .declared-sets:not(:last-child) {
@@ -30,6 +39,9 @@
   border-radius: 7.5px;
   border: 1px solid gray;
   padding: 2px 5px;
+  margin-right: 3px;
+  margin-bottom: 3px;
+  display: inline-block;
 }
 
 .disabled {
@@ -94,7 +106,7 @@
   font-size: 1em;
 }
 .yourTeam {
-  border: 1.5px solid #1890FF;
+  border: 1.5px solid #1890ff;
 }
 
 .buttonrow > button {

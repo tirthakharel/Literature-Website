@@ -37,28 +37,30 @@ export default class App extends React.Component {
       let info = JSON.parse(persistentData);
       let user = info.user;
       let game = info.gameCode;
-      console.log(info);
-      this.socket.emit('reconnect', { user, game }, (err) => {
-        if (err) {
+
+      this.socket.emit('reconnectUser', { user, game }, (data) => {
+        if (data.game) {
+          this.setState({
+            play: data.game.started,
+            assign: !data.game.started,
+            playerName: data.player.name,
+          });
+        }
+        if (data.error) {
           window.localStorage.removeItem('lit-game-user');
         }
       });
     }
 
     this.socket.on('gameData', (data) => {
-      console.log('received game data');
-      this.setState({ game: data.game });
-      if (data.game.started) {
-        this.setState({ play: true });
-      } else {
-        this.setState({ play: false });
-      }
+      console.log(data.game);
+      this.setState({ game: data.game, play: data.game.started });
     });
     this.socket.on('startNew', (data) => {
-      this.setState({ 
-        game: data.game, 
+      this.setState({
+        game: data.game,
         play: false,
-        assign: true
+        assign: true,
       });
     });
   }

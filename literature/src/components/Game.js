@@ -16,7 +16,6 @@ import allSets from '../constants/constants.js';
 const { TabPane } = Tabs;
 const { Option } = Select;
 
-let askedCard = null;
 let askedPlayer = null;
 let transferPlayer = null;
 
@@ -28,7 +27,7 @@ export default class Game extends React.Component {
       helpVisible: false,
       askVisible: false,
       askPlayer: null,
-      askCard: null,
+      askedCard: {suit: "", rank: "", set: ""},
       askSet: 'Select Set',
       availableCards: {},
       availableSetCards: [],
@@ -168,11 +167,13 @@ export default class Game extends React.Component {
   };
 
   cardClicked = (e) => {
-    askedCard = {
-      rank: e.target.dataset.rank,
-      suit: e.target.dataset.suit,
-      set: e.target.dataset.set,
-    };
+    this.setState({
+      askedCard: {
+        rank: e.target.dataset.rank,
+        suit: e.target.dataset.suit,
+        set: e.target.dataset.set,
+      }
+    });
   };
 
   playerClicked = (e) => {
@@ -182,9 +183,9 @@ export default class Game extends React.Component {
 
   handleAsk = (e) => {
     console.log(askedPlayer);
-    console.log(askedCard);
-    if (askedCard != null && askedPlayer != null) {
-      let card = askedCard;
+    console.log(this.state.askedCard);
+    if (this.state.askedCard.suit !== "" && askedPlayer != null) {
+      let card = this.state.askedCard;
       let source = this.props.playerName;
       let target = askedPlayer;
       this.props.socket.emit('ask', { source, target, card }, (asked) => {
@@ -193,10 +194,16 @@ export default class Game extends React.Component {
           declareVisible: false,
           transferVisible: false,
           transfer: false,
-          availableSetCards: this.state.availableCards[askedCard.set],
+          availableSetCards: this.state.availableCards[this.state.askedCard.set],
           askSet: asked ? this.state.askSet : '',
         });
-        askedCard = null;
+        this.setState({
+          askedCard: {
+            rank: "",
+            suit: "",
+            set: "",
+          }
+        });
       });
     }
   };
@@ -488,15 +495,18 @@ export default class Game extends React.Component {
                     justify="center"
                     style={{ marginBottom: '20px' }}
                   >
-                    {this.state.availableSetCards.map((card) => (
-                      <Card
-                        type="ask"
-                        clickFunc={this.cardClicked}
-                        suit={card.suit}
-                        rank={card.rank}
-                        set={card.set}
-                      />
-                    ))}
+                    {this.state.askSet !== '' && (
+                      this.state.availableSetCards.map((card) => (
+                        <Card
+                          type="ask"
+                          checked={this.state.askedCard}
+                          clickFunc={this.cardClicked}
+                          suit={card.suit}
+                          rank={card.rank}
+                          set={card.set}
+                        />
+                      ))
+                    )}
                   </Row>
                   <Row align="middle" justify="center">
                     {this.state.log}

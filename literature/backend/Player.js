@@ -14,20 +14,16 @@ function Player(id, name) {
 }
 
 Player.prototype.addToHand = function addToHand(card) {
-
   let rank = card.rank;
   let set = card.set;
   
   let i = 0;
-
   while (i < this.hand.length && setOrder.indexOf(set) > setOrder.indexOf(this.hand[i].set)) {
     i++;
   }
-
   while (i < this.hand.length && ranks.indexOf(rank) > ranks.indexOf(this.hand[i].rank)) {
     i++;
   }
-
   this.hand.splice(i, 0, card);
 };
 
@@ -40,10 +36,6 @@ Player.prototype.removeFromHand = function removeFromHand(card) {
 };
 
 Player.prototype.hasCard = function hasCard(card) {
-
-  console.log(card.suit);
-  console.log(card.rank);
-
   for (let i = 0; i < this.hand.length; i++) {
     if (this.hand[i].suit === card.suit && this.hand[i].rank === card.rank) {
       return true;

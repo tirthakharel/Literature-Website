@@ -26,7 +26,6 @@ export default class Game extends React.Component {
     super(props);
 
     this.state = {
-      play: false,
       helpVisible: false,
       askVisible: false,
       askPlayer: null,
@@ -222,8 +221,6 @@ export default class Game extends React.Component {
           transferVisible: false,
           declareMap: new Array(6),
         });
-
-        
       });
     }
 
@@ -236,7 +233,6 @@ export default class Game extends React.Component {
   };
 
   handleDeclareSelect = e => {
-    console.log(e);
     console.log(allSets[e]);
     this.setState({
       declareCards: allSets[e],
@@ -294,6 +290,10 @@ export default class Game extends React.Component {
     });
   };
 
+  newGame = () => {
+    this.props.socket.emit("newGame");
+  }
+
   toString = (card) => {
     return card.suit === 'Joker' ?
            card.rank + ' ' + card.suit :
@@ -301,24 +301,24 @@ export default class Game extends React.Component {
   }
 
   render() {
-
+    let hasEnded = "none";
+    if (this.props.game.scoreTeam1 >= 5 || this.props.game.scoreTeam2 >= 5) {
+      hasEnded = "block";
+    }
     return (
       <Row className="bg">
         <Row>
-          <Col span={22}>
-            <img
+          <img
             src={logo}
             alt="Literature logo"
             style={{ margin: '30px' }}
             width="200px"
           />
-          </Col>
-          <Col span={1}>
-            <Row style={{height: '100%'}} align='middle' justify='center'>
-              <Button onClick={this.showHelpModal} shape="circle" icon={<QuestionOutlined />}>
-              </Button>
-            </Row>
-          </Col>
+          <div style={{position: 'absolute', right: '5vw', top: '35px', display: hasEnded}}>
+            <Button type="primary" size="large" style={{borderRadius: '7.5px'}} onClick={this.newGame}>
+              New Game
+            </Button>
+          </div>
         </Row>
         <Row className="gameRow">
           <Col className="teamCol" lg={5} md={6}>
@@ -340,8 +340,13 @@ export default class Game extends React.Component {
             />
           </Col>
           <Col lg={17} md={16} className="gameCol">
+            <div className="panel" style={{height: '100%'}}>
+            <Row style={{position: 'absolute', right: '30px', top: '30px'}} align='middle' justify='center'>
+              <Button onClick={this.showHelpModal} shape="circle" icon={<QuestionOutlined />}>
+              </Button>
+            </Row>
             <Row
-              className="panel gamePanel"
+              className="gamePanel"
               justify="center"
               align="middle"
               style={{ flexDirection: 'column' }}
@@ -497,9 +502,7 @@ export default class Game extends React.Component {
                   
                 ]}
               >
-                <Tabs
-                  defaultActiveKey="1"
-                >
+                <Tabs defaultActiveKey="1">
                   <TabPane tab="Setup" key="1">
                     <p style={{marginBottom: '3px'}}><b>Players:</b> 6, 8, or 10</p>
                     <p style={{marginBottom: '3px'}}><b>Deck:</b> 52 Card Deck + 2 Jokers</p> 
@@ -517,6 +520,7 @@ export default class Game extends React.Component {
                 </Tabs>
               </Modal>
             </Row>
+            </div>
           </Col>
         </Row>
       </Row>

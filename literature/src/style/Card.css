@@ -35,6 +35,8 @@
 }
 
 .cardrow {
+  display: flex;
+  flex-direction: row;
   padding: 0 5px;
   justify-content: center;
   max-height: 335px;
@@ -47,6 +49,8 @@
 
 @media (max-width: 767px) {
   .cardrow {
+    display: flex;
+    flex-direction: row;
     padding: 0 5px;
     justify-content: center;
     max-height: 160px;

@@ -9,7 +9,8 @@ function Game(code) {
   this.scoreTeam1 = 0;
   this.scoreTeam2 = 0;
   this.started = false;
-  this.declaredSets = [];
+  this.declaredSetsTeam1 = [];
+  this.declaredSetsTeam2 = [];
   this.log = "Let's start the game!";
   this.deck = new Deck();
 }
@@ -81,33 +82,36 @@ Game.prototype.ask = function ask(sourcePlayerName, targetPlayerName, card) {
   }
 }
 
-Game.prototype.declare = function declare(playerName, map, set) {
+Game.prototype.declare = function declare(playerName, cards, set) {
   let player = this.playerMap.get(playerName);
   if (player.isTurn && player.hand.length > 0) {
-    for (let [teammate, cards] of map) {
-      for (let i = 0; i < cards.length; i++) {
-        if (!teammate.hasCard(cards[i])) {
-          // incorrect declare
-          if (player.team === 1) {
-            this.scoreTeam2++;
-          } else {
-            this.scoreTeam1++;
-          }
-          this.deleteCards(set);
-          this.declaredSets.push(set);
-          return;
+
+    for (let i = 0; i < cards.length; i++) {
+      if (!this.playerMap.get(cards[i].player).hasCard(cards[i].card)) {
+        // incorrect declare
+        if (player.team === 1) {
+          this.scoreTeam2++;
+          this.declaredSetsTeam2.push(set);
+        } else {
+          this.scoreTeam1++;
+          this.declaredSetsTeam1.push(set);
         }
+        this.deleteCards(set);
+        return false;
       }
     }
     // correct declare
     if (player.team === 1) {
       this.scoreTeam1++;
+      this.declaredSetsTeam1.push(set);
     } else {
       this.scoreTeam2++;
+      this.declaredSetsTeam2.push(set);
     }
+
     this.deleteCards(set);
-    this.declaredSets.push(set);
-  }
+    return true;
+  } 
 }
 
 Game.prototype.deleteCards = function deleteCards(set) {
@@ -119,6 +123,9 @@ Game.prototype.deleteCards = function deleteCards(set) {
         break;
       }
     }
+  }
+  for (let i = 0; i < this.players.length; i++) {
+    this.players[i].allAvailableCards();
   }
 }
 

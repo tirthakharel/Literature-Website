@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Button, Modal, Radio, Select, Tabs } from 'antd';
+import { Row, Col, Button, Modal, Radio, Select, Tabs, Form } from 'antd';
 import {
   UserOutlined,
   BellOutlined,
@@ -12,6 +12,7 @@ import logo from '../lit-logo.png';
 import TeamInfo from './TeamInfo.js';
 import Board from './Board';
 import Card from './Card';
+import allSets from '../constants/constants.js'
 
 const { TabPane } = Tabs;
 const { Option } = Select;
@@ -41,7 +42,12 @@ export default class Game extends React.Component {
       team: null,
       cards: [],
       isTurn: false,
-      log: "Let's start the game"
+      playerTurn: null,
+      log: null,
+      declareMap: new Array(6),
+      declareSet: null,
+      declaredSetsTeamOne: [],
+      declaredSetsTeamTwo: [],
     };
   }
 
@@ -66,10 +72,15 @@ export default class Game extends React.Component {
           log: this.props.game.log,
         });
       }
+      if (arr[i].isTurn) {
+        this.setState({ playerTurn: arr[i].name });
+      }
     }
     this.setState({
       teamOneData: teamOne,
       teamTwoData: teamTwo,
+      declaredSetsTeamOne: this.props.game.declaredSetsTeam1,
+      declaredSetsTeamTwo: this.props.game.declaredSetsTeam2,
     });
   }
 
@@ -81,6 +92,7 @@ export default class Game extends React.Component {
     let availableSets = [];
     let isTurn = false;
     let team = null;
+    let playerTurn = null;
     let arr = this.props.game.players;
     for (let i = 0; i < arr.length; i++) {
       if (arr[i].team === 1) {
@@ -95,6 +107,9 @@ export default class Game extends React.Component {
         team = arr[i].team;
         availableSets = arr[i].sets;
       }
+      if (arr[i].isTurn) {
+        playerTurn = arr[i].name;
+      }
     }
     if (
       teamOne.length !== prevState.teamOneData.length ||
@@ -104,7 +119,10 @@ export default class Game extends React.Component {
       availableSets.length !== prevState.availableSets.length ||
       isTurn !== prevState.isTurn ||
       team !== prevState.team ||
-      this.props.game.log !== prevState.log
+      this.props.game.log !== prevState.log ||
+      this.props.game.declaredSetsTeam1.length !== prevState.declaredSetsTeamOne.length ||
+      this.props.game.declaredSetsTeam2.length !== prevState.declaredSetsTeamTwo.length ||
+      playerTurn !== prevState.playerTurn
     ) {
       this.setState({
         teamOneData: teamOne,
@@ -114,7 +132,10 @@ export default class Game extends React.Component {
         availableCards: availableCards,
         team: team,
         availableSets: availableSets,
-        log: this.props.game.log
+        log: this.props.game.log,
+        declaredSetsTeamOne: this.props.game.declaredSetsTeam1,
+        declaredSetsTeamTwo: this.props.game.declaredSetsTeam2,
+        playerTurn: playerTurn,
       });
     }
   }
@@ -180,7 +201,32 @@ export default class Game extends React.Component {
   };
 
   handleDeclare = e => {
-    console.log(e);
+    e.preventDefault();
+    console.log(this.state.declareMap);
+    if (Object.keys(this.state.declareMap).length === 6) {
+      let cards = this.state.declareMap;
+      let player = this.props.playerName;
+      let set = this.state.declareSet;
+      this.props.socket.emit("declare", { player, cards, set }, (declare) => {
+        if (declare) {
+          this.setState({ transfer: true });
+          alert(player + " correctly declared the " + set);
+        } else {
+          this.setState({ transfer: false });
+          alert(player + " incorrectly declared the " + set);
+        }
+        
+        this.setState({
+          askVisible: false,
+          declareVisible: false,
+          transferVisible: false,
+          declareMap: new Array(6),
+        });
+
+        
+      });
+    }
+
     this.setState({
       askVisible: false,
       declareVisible: false,
@@ -191,43 +237,24 @@ export default class Game extends React.Component {
 
   handleDeclareSelect = e => {
     console.log(e);
-    //send set name to backend
-
-    //receive set of available cards
-
-    //set state to that list of cards
+    console.log(allSets[e]);
     this.setState({
-      declareCards: [
-        { rank: '2', 
-          suit: 'Clubs',
-          set: 'Low Clubs',
-        },
-        { rank: '3', 
-          suit: 'Clubs',
-          set: 'Low Clubs',
-        },
-        { rank: '4', 
-          suit: 'Clubs',
-          set: 'Low Clubs',
-        },
-        { rank: '5', 
-          suit: 'Clubs',
-          set: 'Low Clubs',
-        },
-        { rank: '6', 
-          suit: 'Clubs',
-          set: 'Low Clubs',
-        },
-        { rank: '7', 
-          suit: 'Clubs',
-          set: 'Low Clubs',
-        }
-      ]
+      declareCards: allSets[e],
+      declareSet: e
     });
   }
 
-  handleDeclareMap(e) {
-    console.log(e.target.value);
+  handleDeclareMap = (e) => {
+    let map = this.state.declareMap;
+    const card = this.state.declareCards[e.target.name];
+    const player = e.target.value;
+
+    map[e.target.name] = {
+      player: player, 
+      card: card 
+    };
+
+    this.setState({ declareMap: map });
   }
 
   //Transfer Modal Events
@@ -242,7 +269,6 @@ export default class Game extends React.Component {
   }
 
   handleTransfer = e => {
-    console.log(e);
     if (transferPlayer != null) {
       let source = this.props.playerName;
       let target = transferPlayer;
@@ -268,6 +294,12 @@ export default class Game extends React.Component {
     });
   };
 
+  toString = (card) => {
+    return card.suit === 'Joker' ?
+           card.rank + ' ' + card.suit :
+           card.rank + ' of ' + card.suit;
+  }
+
   render() {
 
     return (
@@ -290,8 +322,22 @@ export default class Game extends React.Component {
         </Row>
         <Row className="gameRow">
           <Col className="teamCol" lg={5} md={6}>
-            <TeamInfo name="Team One" score={this.props.game.scoreTeam1} data={this.state.teamOneData} />
-            <TeamInfo name="Team Two" score={this.props.game.scoreTeam2} data={this.state.teamTwoData} />
+            <TeamInfo 
+              name="Team One" 
+              score={this.props.game.scoreTeam1} 
+              data={this.state.teamOneData} 
+              playerTurn={this.state.playerTurn}
+              isTeam={this.state.team === 1}
+              declaredSets={this.state.declaredSetsTeamOne} 
+            />
+            <TeamInfo 
+              name="Team Two" 
+              score={this.props.game.scoreTeam2} 
+              data={this.state.teamTwoData} 
+              playerTurn={this.state.playerTurn}
+              isTeam={this.state.team === 2}
+              declaredSets={this.state.declaredSetsTeamTwo} 
+            />
           </Col>
           <Col lg={17} md={16} className="gameCol">
             <Row
@@ -305,15 +351,15 @@ export default class Game extends React.Component {
               </h1>
               <Board cards={this.state.cards} />
               <div className="buttonrow">
-                <Button type="primary" onClick={this.showAskModal} size="large">
+                <Button type={this.state.isTurn ? 'primary' : 'disabled'} onClick={this.state.isTurn ? this.showAskModal : ''} size="large">
                   <QuestionOutlined />
                   Ask
                 </Button>
-                <Button type="primary" onClick={this.showDeclareModal} size="large">
+                <Button type={this.state.isTurn ? 'primary' : 'disabled'} onClick={this.state.isTurn ? this.showDeclareModal : ''} size="large">
                   <BellOutlined />
                   Declare
                 </Button>
-                <Button type="primary" onClick={this.showTransferModal} size="large">
+                <Button type={this.state.isTurn ? 'primary' : 'disabled'} onClick={this.state.isTurn ? this.showTransferModal : ''} size="large">
                   <SwapOutlined />
                   Transfer
                 </Button>
@@ -354,7 +400,7 @@ export default class Game extends React.Component {
                       )} 
                     </Select>
                   </Row>
-                  <Row align="middle" justify="center">
+                  <Row align="middle" justify="center" style={{ marginBottom: '20px'}}>
                     {this.state.availableSetCards.map((card) => 
                       <Card 
                         type='ask' 
@@ -364,6 +410,9 @@ export default class Game extends React.Component {
                         set={card.set} 
                       />
                     )}
+                  </Row>
+                  <Row align="middle" justify="center">
+                    {this.state.log}
                   </Row>
               </Modal>
               <Modal
@@ -375,7 +424,7 @@ export default class Game extends React.Component {
                   <Button key="cancel" onClick={this.handleCancel}>
                     Cancel
                   </Button>,
-                  <Button key="ask" type="primary" onClick={this.handleDeclare}>
+                  <Button onClick={this.handleDeclare} key="ask" type="primary">
                     Declare
                   </Button>,
                 ]}
@@ -387,27 +436,30 @@ export default class Game extends React.Component {
                       onChange={this.handleDeclareSelect}
                     >
                       {this.state.availableSets.map((set) => 
-                        <Option value={set}>{set}</Option>
+                        <Option style={{marginBottom: '10px'}}value={set}>{set}</Option>
                       )}                       
                     </Select>
                   </Row>
-                  <Row align="middle" justify="center">
-                    
+                  <div>
                     {this.state.declareCards.map((card, index) =>
-                      <div className="declareRow">
-                        <span style={{marginRight: '10px'}}>{card.rank + ' of ' + card.suit}</span>
-                        <Radio.Group onChange={this.handleDeclareMap} name={index} buttonStyle="solid">
-                          {this.props.game.players.map((player) => {
-                            if (player.name !== this.props.playerName && player.team === this.state.team) {
-                              return <Radio.Button value={player.name}>{player.name}</Radio.Button>;
-                            }
+                      <Row style={{ width: '100%' }} className='declareRow'>
+                        <Col span={8} style={{ display: 'flex', flexDirection: 'row-reverse', alignItems:'center' }}>
+                          <span style={{marginRight: '10px'}}>{this.toString(card)}</span>
+                        </Col>
+                        <Col span={15}>
+                          <Radio.Group onChange={this.handleDeclareMap} data-index={index} name={index} buttonStyle="solid">
+                            {this.props.game.players.map((player) => {
+                              if (player.team === this.state.team) {
+                                return <Radio.Button value={player.name}>{player.name}</Radio.Button>;
+                              }
 
-                            return <span></span>;
-                          })}
-                        </Radio.Group>
-                      </div> 
+                              return <span></span>;
+                            })}
+                          </Radio.Group>
+                        </Col>
+                      </Row> 
                     )}
-                  </Row>
+                  </div>
               </Modal>
               <Modal
                 title="Transfer Your Turn"

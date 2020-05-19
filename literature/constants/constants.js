@@ -32,6 +32,18 @@ const setNames = [
   'Jokers',
 ];
 
+const setOrder = [
+  'Low Spades',
+  'Low Diamonds',
+  'Low Clubs',
+  'Low Hearts',
+  'High Spades',
+  'High Diamonds',
+  'High Clubs',
+  'High Hearts',
+  'Jokers'
+]
+
 const lowHearts = [
   new Card('2', 'Hearts'),
   new Card('3', 'Hearts'),
@@ -117,6 +129,7 @@ module.exports = {
   suits,
   ranks,
   setNames,
+  setOrder,
   lowHearts,
   highHearts,
   lowDiamonds,

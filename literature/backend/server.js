@@ -139,6 +139,14 @@ io.on('connection', (socket) => {
     callback();
   });
 
+  socket.on('declare', ({ player, cards, set }, callback) => {
+    let declare = connectionGame.declare(player, cards, set);
+    io.to(connectionGame.code).emit('gameData', {
+      game: connectionGame,
+    });
+    callback(declare);
+  });
+
   socket.on('disconnect', () => {
     if (connectionGame != null) {
       if (connectionGame.started) {

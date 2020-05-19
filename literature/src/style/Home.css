@@ -14,6 +14,28 @@
   width: 350px;
 }
 
+.cardrow {
+  
+}
+
+.declared-sets {
+  margin-top: 20px
+}
+
+.declared-sets:not(:last-child) {
+  margin-right: 3px;
+}
+
+.set-label {
+  border-radius: 7.5px;
+  border: 1px solid gray;
+  padding: 2px 5px;
+}
+
+.disabled {
+  pointer-events: none;
+}
+
 .gameRow {
   width: 100%;
   flex-direction: row;
@@ -70,6 +92,9 @@
   width: 100%;
   display: block;
   font-size: 1em;
+}
+.yourTeam {
+  border: 1.5px solid #1890FF;
 }
 
 .buttonrow > button {

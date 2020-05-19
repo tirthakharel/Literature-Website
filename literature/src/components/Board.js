@@ -1,5 +1,6 @@
 import React from 'react';
 import { Row, Col } from 'antd';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Card from './Card';
 import 'antd/dist/antd.css';
 import '../style/Home.css';

@@ -25,7 +25,6 @@ export default class Game extends React.Component {
     super(props);
 
     this.state = {
-      play: false,
       helpVisible: false,
       askVisible: false,
       askPlayer: null,
@@ -235,7 +234,6 @@ export default class Game extends React.Component {
   };
 
   handleDeclareSelect = (e) => {
-    console.log(e);
     console.log(allSets[e]);
     this.setState({
       declareCards: allSets[e],
@@ -293,6 +291,10 @@ export default class Game extends React.Component {
     });
   };
 
+  newGame = () => {
+    this.props.socket.emit('newGame');
+  };
+
   toString = (card) => {
     return card.suit === 'Joker'
       ? card.rank + ' ' + card.suit
@@ -300,26 +302,36 @@ export default class Game extends React.Component {
   };
 
   render() {
+    let hasEnded = 'none';
+    if (this.props.game.scoreTeam1 >= 5 || this.props.game.scoreTeam2 >= 5) {
+      hasEnded = 'block';
+    }
     return (
       <Row className="bg">
         <Row>
-          <Col span={22}>
-            <img
-              src={logo}
-              alt="Literature logo"
-              style={{ margin: '30px' }}
-              width="200px"
-            />
-          </Col>
-          <Col span={1}>
-            <Row style={{ height: '100%' }} align="middle" justify="center">
-              <Button
-                onClick={this.showHelpModal}
-                shape="circle"
-                icon={<QuestionOutlined />}
-              ></Button>
-            </Row>
-          </Col>
+          <img
+            src={logo}
+            alt="Literature logo"
+            style={{ margin: '30px' }}
+            width="200px"
+          />
+          <div
+            style={{
+              position: 'absolute',
+              right: '5vw',
+              top: '35px',
+              display: hasEnded,
+            }}
+          >
+            <Button
+              type="primary"
+              size="large"
+              style={{ borderRadius: '7.5px' }}
+              onClick={this.newGame}
+            >
+              New Game
+            </Button>
+          </div>
         </Row>
         <Row className="gameRow">
           <Col className="teamCol" lg={5} md={6}>
@@ -341,254 +353,271 @@ export default class Game extends React.Component {
             />
           </Col>
           <Col lg={17} md={16} className="gameCol">
-            <Row
-              className="panel gamePanel"
-              justify="center"
-              align="middle"
-              style={{ flexDirection: 'column' }}
-            >
-              <h1 className="log">{this.state.log}</h1>
-              <Board cards={this.state.cards} />
-              <div className="buttonrow">
-                <Button
-                  type={this.state.isTurn ? 'primary' : 'disabled'}
-                  onClick={this.state.isTurn ? this.showAskModal : ''}
-                  size="large"
-                >
-                  <QuestionOutlined />
-                  Ask
-                </Button>
-                <Button
-                  type={this.state.isTurn ? 'primary' : 'disabled'}
-                  onClick={this.state.isTurn ? this.showDeclareModal : ''}
-                  size="large"
-                >
-                  <BellOutlined />
-                  Declare
-                </Button>
-                <Button
-                  type={this.state.isTurn ? 'primary' : 'disabled'}
-                  onClick={this.state.isTurn ? this.showTransferModal : ''}
-                  size="large"
-                >
-                  <SwapOutlined />
-                  Transfer
-                </Button>
-              </div>
-              <Modal
-                title="Ask For a Card"
-                visible={this.state.askVisible}
-                onOk={this.handleAsk}
-                onCancel={this.handleCancel}
-                footer={[
-                  <Button key="cancel" onClick={this.handleCancel}>
-                    Cancel
-                  </Button>,
-                  <Button key="ask" type="primary" onClick={this.handleAsk}>
-                    Ask
-                  </Button>,
-                ]}
+            <div className="panel" style={{ height: '100%' }}>
+              <Row
+                style={{ position: 'absolute', right: '30px', top: '30px' }}
+                align="middle"
+                justify="center"
               >
-                <Row
-                  align="middle"
-                  justify="center"
-                  style={{ marginBottom: '20px' }}
-                >
-                  <Radio.Group
-                    onChange={this.playerClicked}
-                    buttonStyle="solid"
-                  >
-                    {this.props.game.players.map((player) => {
-                      if (
-                        player.name !== this.props.playerName &&
-                        player.team !== this.state.team
-                      ) {
-                        return (
-                          <Radio.Button value={player.name}>
-                            {player.name}
-                          </Radio.Button>
-                        );
-                      }
-
-                      return <span></span>;
-                    })}
-                  </Radio.Group>
-                </Row>
-                <Row
-                  align="middle"
-                  justify="center"
-                  style={{ marginBottom: '20px' }}
-                >
-                  <Select
-                    style={{ width: 150 }}
-                    placeholder="Select Set"
-                    onChange={this.handleSetSelect}
-                  >
-                    {this.state.availableSets.map((set) => (
-                      <Option value={set}>{set}</Option>
-                    ))}
-                  </Select>
-                </Row>
-                <Row
-                  align="middle"
-                  justify="center"
-                  style={{ marginBottom: '20px' }}
-                >
-                  {this.state.availableSetCards.map((card) => (
-                    <Card
-                      type="ask"
-                      clickFunc={this.cardClicked}
-                      suit={card.suit}
-                      rank={card.rank}
-                      set={card.set}
-                    />
-                  ))}
-                </Row>
-                <Row align="middle" justify="center">
-                  {this.state.log}
-                </Row>
-              </Modal>
-              <Modal
-                title="Declare a Set"
-                visible={this.state.declareVisible}
-                onOk={this.handleDeclare}
-                onCancel={this.handleCancel}
-                footer={[
-                  <Button key="cancel" onClick={this.handleCancel}>
-                    Cancel
-                  </Button>,
-                  <Button onClick={this.handleDeclare} key="ask" type="primary">
-                    Declare
-                  </Button>,
-                ]}
+                <Button
+                  onClick={this.showHelpModal}
+                  shape="circle"
+                  icon={<QuestionOutlined />}
+                ></Button>
+              </Row>
+              <Row
+                className="gamePanel"
+                justify="center"
+                align="middle"
+                style={{ flexDirection: 'column' }}
               >
-                <Row
-                  align="middle"
-                  justify="center"
-                  style={{ marginBottom: '20px' }}
-                >
-                  <Select
-                    style={{ width: 150 }}
-                    placeholder="Select Set"
-                    onChange={this.handleDeclareSelect}
-                  >
-                    {this.state.availableSets.map((set) => (
-                      <Option style={{ marginBottom: '10px' }} value={set}>
-                        {set}
-                      </Option>
-                    ))}
-                  </Select>
-                </Row>
-                <div>
-                  {this.state.declareCards.map((card, index) => (
-                    <Row style={{ width: '100%' }} className="declareRow">
-                      <Col
-                        span={8}
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'row-reverse',
-                          alignItems: 'center',
-                        }}
-                      >
-                        <span style={{ marginRight: '10px' }}>
-                          {this.toString(card)}
-                        </span>
-                      </Col>
-                      <Col span={15}>
-                        <Radio.Group
-                          onChange={this.handleDeclareMap}
-                          data-index={index}
-                          name={index}
-                          buttonStyle="solid"
-                        >
-                          {this.props.game.players.map((player) => {
-                            if (player.team === this.state.team) {
-                              return (
-                                <Radio.Button value={player.name}>
-                                  {player.name}
-                                </Radio.Button>
-                              );
-                            }
-
-                            return <span></span>;
-                          })}
-                        </Radio.Group>
-                      </Col>
-                    </Row>
-                  ))}
-                </div>
-              </Modal>
-              <Modal
-                title="Transfer Your Turn"
-                visible={this.state.transferVisible}
-                onOk={this.handleTransfer}
-                onCancel={this.handleCancel}
-                footer={[
-                  <Button key="cancel" onClick={this.handleCancel}>
-                    Cancel
-                  </Button>,
+                <h1 className="log">{this.state.log}</h1>
+                <Board cards={this.state.cards} />
+                <div className="buttonrow">
                   <Button
-                    key="ask"
-                    type="primary"
-                    onClick={this.handleTransfer}
+                    type={this.state.isTurn ? 'primary' : 'disabled'}
+                    onClick={this.state.isTurn ? this.showAskModal : ''}
+                    size="large"
                   >
+                    <QuestionOutlined />
+                    Ask
+                  </Button>
+                  <Button
+                    type={this.state.isTurn ? 'primary' : 'disabled'}
+                    onClick={this.state.isTurn ? this.showDeclareModal : ''}
+                    size="large"
+                  >
+                    <BellOutlined />
+                    Declare
+                  </Button>
+                  <Button
+                    type={this.state.isTurn ? 'primary' : 'disabled'}
+                    onClick={this.state.isTurn ? this.showTransferModal : ''}
+                    size="large"
+                  >
+                    <SwapOutlined />
                     Transfer
-                  </Button>,
-                ]}
-              >
-                <Row align="middle" justify="center">
-                  <Radio.Group
-                    onChange={this.transferClicked}
-                    buttonStyle="solid"
+                  </Button>
+                </div>
+                <Modal
+                  title="Ask For a Card"
+                  visible={this.state.askVisible}
+                  onOk={this.handleAsk}
+                  onCancel={this.handleCancel}
+                  footer={[
+                    <Button key="cancel" onClick={this.handleCancel}>
+                      Cancel
+                    </Button>,
+                    <Button key="ask" type="primary" onClick={this.handleAsk}>
+                      Ask
+                    </Button>,
+                  ]}
+                >
+                  <Row
+                    align="middle"
+                    justify="center"
+                    style={{ marginBottom: '20px' }}
                   >
-                    {this.props.game.players.map((player) => {
-                      if (
-                        player.name !== this.props.playerName &&
-                        player.team === this.state.team
-                      ) {
-                        return (
-                          <Radio.Button value={player.name}>
-                            {player.name}
-                          </Radio.Button>
-                        );
-                      }
+                    <Radio.Group
+                      onChange={this.playerClicked}
+                      buttonStyle="solid"
+                    >
+                      {this.props.game.players.map((player) => {
+                        if (
+                          player.name !== this.props.playerName &&
+                          player.team !== this.state.team
+                        ) {
+                          return (
+                            <Radio.Button value={player.name}>
+                              {player.name}
+                            </Radio.Button>
+                          );
+                        }
 
-                      return <span></span>;
-                    })}
-                  </Radio.Group>
-                </Row>
-              </Modal>
-              <Modal
-                title="How To Play"
-                visible={this.state.helpVisible}
-                onOk={this.handleTransfer}
-                onCancel={this.handleCancel}
-                style={{ padding: 0 }}
-                footer={[]}
-              >
-                <Tabs defaultActiveKey="1">
-                  <TabPane tab="Setup" key="1">
-                    <p style={{ marginBottom: '3px' }}>
-                      <b>Players:</b> 6, 8, or 10
-                    </p>
-                    <p style={{ marginBottom: '3px' }}>
-                      <b>Deck:</b> 52 Card Deck + 2 Jokers
-                    </p>
-                    <p>
-                      Literature, or Fish, is a strategic turn-based card game.
-                      The game is comprised of two teams whose objective is to
-                      win 5 sets.
-                    </p>
-                  </TabPane>
-                  <TabPane tab="Ask" key="2">
-                    instructions
-                  </TabPane>
-                  <TabPane tab="Declare" key="3">
-                    instructions
-                  </TabPane>
-                </Tabs>
-              </Modal>
-            </Row>
+                        return <span></span>;
+                      })}
+                    </Radio.Group>
+                  </Row>
+                  <Row
+                    align="middle"
+                    justify="center"
+                    style={{ marginBottom: '20px' }}
+                  >
+                    <Select
+                      style={{ width: 150 }}
+                      placeholder="Select Set"
+                      onChange={this.handleSetSelect}
+                    >
+                      {this.state.availableSets.map((set) => (
+                        <Option value={set}>{set}</Option>
+                      ))}
+                    </Select>
+                  </Row>
+                  <Row
+                    align="middle"
+                    justify="center"
+                    style={{ marginBottom: '20px' }}
+                  >
+                    {this.state.availableSetCards.map((card) => (
+                      <Card
+                        type="ask"
+                        clickFunc={this.cardClicked}
+                        suit={card.suit}
+                        rank={card.rank}
+                        set={card.set}
+                      />
+                    ))}
+                  </Row>
+                  <Row align="middle" justify="center">
+                    {this.state.log}
+                  </Row>
+                </Modal>
+                <Modal
+                  title="Declare a Set"
+                  visible={this.state.declareVisible}
+                  onOk={this.handleDeclare}
+                  onCancel={this.handleCancel}
+                  footer={[
+                    <Button key="cancel" onClick={this.handleCancel}>
+                      Cancel
+                    </Button>,
+                    <Button
+                      onClick={this.handleDeclare}
+                      key="ask"
+                      type="primary"
+                    >
+                      Declare
+                    </Button>,
+                  ]}
+                >
+                  <Row
+                    align="middle"
+                    justify="center"
+                    style={{ marginBottom: '20px' }}
+                  >
+                    <Select
+                      style={{ width: 150 }}
+                      placeholder="Select Set"
+                      onChange={this.handleDeclareSelect}
+                    >
+                      {this.state.availableSets.map((set) => (
+                        <Option style={{ marginBottom: '10px' }} value={set}>
+                          {set}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Row>
+                  <div>
+                    {this.state.declareCards.map((card, index) => (
+                      <Row style={{ width: '100%' }} className="declareRow">
+                        <Col
+                          span={8}
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'row-reverse',
+                            alignItems: 'center',
+                          }}
+                        >
+                          <span style={{ marginRight: '10px' }}>
+                            {this.toString(card)}
+                          </span>
+                        </Col>
+                        <Col span={15}>
+                          <Radio.Group
+                            onChange={this.handleDeclareMap}
+                            data-index={index}
+                            name={index}
+                            buttonStyle="solid"
+                          >
+                            {this.props.game.players.map((player) => {
+                              if (player.team === this.state.team) {
+                                return (
+                                  <Radio.Button value={player.name}>
+                                    {player.name}
+                                  </Radio.Button>
+                                );
+                              }
+
+                              return <span></span>;
+                            })}
+                          </Radio.Group>
+                        </Col>
+                      </Row>
+                    ))}
+                  </div>
+                </Modal>
+                <Modal
+                  title="Transfer Your Turn"
+                  visible={this.state.transferVisible}
+                  onOk={this.handleTransfer}
+                  onCancel={this.handleCancel}
+                  footer={[
+                    <Button key="cancel" onClick={this.handleCancel}>
+                      Cancel
+                    </Button>,
+                    <Button
+                      key="ask"
+                      type="primary"
+                      onClick={this.handleTransfer}
+                    >
+                      Transfer
+                    </Button>,
+                  ]}
+                >
+                  <Row align="middle" justify="center">
+                    <Radio.Group
+                      onChange={this.transferClicked}
+                      buttonStyle="solid"
+                    >
+                      {this.props.game.players.map((player) => {
+                        if (
+                          player.name !== this.props.playerName &&
+                          player.team === this.state.team
+                        ) {
+                          return (
+                            <Radio.Button value={player.name}>
+                              {player.name}
+                            </Radio.Button>
+                          );
+                        }
+
+                        return <span></span>;
+                      })}
+                    </Radio.Group>
+                  </Row>
+                </Modal>
+                <Modal
+                  title="How To Play"
+                  visible={this.state.helpVisible}
+                  onOk={this.handleTransfer}
+                  onCancel={this.handleCancel}
+                  style={{ padding: 0 }}
+                  footer={[]}
+                >
+                  <Tabs defaultActiveKey="1">
+                    <TabPane tab="Setup" key="1">
+                      <p style={{ marginBottom: '3px' }}>
+                        <b>Players:</b> 6, 8, or 10
+                      </p>
+                      <p style={{ marginBottom: '3px' }}>
+                        <b>Deck:</b> 52 Card Deck + 2 Jokers
+                      </p>
+                      <p>
+                        Literature, or Fish, is a strategic turn-based card
+                        game. The game is comprised of two teams whose objective
+                        is to win 5 sets.
+                      </p>
+                    </TabPane>
+                    <TabPane tab="Ask" key="2">
+                      instructions
+                    </TabPane>
+                    <TabPane tab="Declare" key="3">
+                      instructions
+                    </TabPane>
+                  </Tabs>
+                </Modal>
+              </Row>
+            </div>
           </Col>
         </Row>
       </Row>

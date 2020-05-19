@@ -54,6 +54,13 @@ export default class App extends React.Component {
         this.setState({ play: false });
       }
     });
+    this.socket.on('startNew', (data) => {
+      this.setState({ 
+        game: data.game, 
+        play: false,
+        assign: true
+      });
+    });
   }
 
   render() {

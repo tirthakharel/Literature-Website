@@ -83,7 +83,6 @@ io.on('connection', (socket) => {
 
   socket.on('join', ({ name, code }, callback) => {
     let codeFound = false;
-    console.log(code);
     for (let i = 0; i < games.length; i++) {
       if (games[i].code === code) {
         codeFound = true;
@@ -159,14 +158,12 @@ io.on('connection', (socket) => {
 
   socket.on('start', () => {
     connectionGame.start();
-    console.log(connectionGame.players);
     io.to(connectionGame.code).emit('gameData', {
       game: connectionGame,
     });
   });
 
   socket.on('ask', ({ source, target, card }, callback) => {
-    console.log(target);
     let asked = connectionGame.ask(source, target, card);
     io.to(connectionGame.code).emit('gameData', {
       game: connectionGame,
@@ -190,11 +187,33 @@ io.on('connection', (socket) => {
     callback(declare);
   });
 
+  socket.on('newGame', () => {
+    connectionGame.started = false;
+    io.to(connectionGame.code).emit('startNew', {
+      game: connectionGame
+    });
+  });
+
   socket.on('disconnect', () => {
     if (connectionGame != null) {
       if (connectionGame.started) {
         connectionPlayer.connected = false;
-        console.log(connectionPlayer.name + ' disconnected');
+        
+        let remove = true;
+        // remove the game if everyone is disconnected
+        for (let i = 0; i < connectionGame.players.length; i++) {
+          if (connectionGame.players[i].connected === true) {
+            remove = false
+          }
+        }
+        if (remove) {
+          for (let i = 0; i < games.length; i++) {
+            if (games[i].code === connectionGame.code) {
+              console.log("Game removed");
+              games.splice(i, 1);
+            }
+          }
+        }
       } else {
         connectionGame.removePlayer(connectionPlayer.name);
         io.to(connectionGame.code).emit('gameData', {

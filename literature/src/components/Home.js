@@ -24,9 +24,8 @@ export default class Home extends React.Component {
           src={logo}
           alt="Literature Logo"
           style={{ marginTop: '10vh', marginBottom: '10vh' }}
-          width="550px"
         />
-        <Row style={{ width: '100%' }}>
+        <Row className="homeRow">
           <Col className="homeCol" sm={12} align="right">
             <div align="left" className="panel homePanel">
               <Row

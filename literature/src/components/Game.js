@@ -329,12 +329,7 @@ export default class Game extends React.Component {
     return (
       <Row className="bg">
         <Row>
-          <img
-            src={logo}
-            alt="Literature logo"
-            style={{ margin: '30px' }}
-            width="200px"
-          />
+          <img src={logo} alt="Literature logo" className="lit-logo" />
           <div
             style={{
               position: 'absolute',
@@ -373,18 +368,14 @@ export default class Game extends React.Component {
             />
           </Col>
           <Col lg={17} md={16} className="gameCol">
-            <div className="panel" style={{ height: '100%' }}>
-              <Row
-                style={{ position: 'absolute', right: '30px', top: '30px' }}
-                align="middle"
-                justify="center"
-              >
+            <div className="panel">
+              <div className="info-btn-wrapper">
                 <Button
                   onClick={this.showHelpModal}
                   shape="circle"
                   icon={<QuestionOutlined />}
                 ></Button>
-              </Row>
+              </div>
               <Row
                 className="gamePanel"
                 justify="center"
@@ -653,14 +644,14 @@ export default class Game extends React.Component {
                 </Modal>
               </Row>
             </div>
+            <div className="footerRow">
+              <span className="footer-info">
+                Made with &#10084; by Praneeth Alla, Tirtha Kharel, Ashwin
+                Nathan, and Ishaan Rao
+              </span>
+            </div>
           </Col>
         </Row>
-        <div className="footerRow">
-          <span className="footer-info">
-            Made with &#10084; by Praneeth Alla, Tirtha Kharel, Ashwin Nathan,
-            and Ishaan Rao
-          </span>
-        </div>
       </Row>
     );
   }

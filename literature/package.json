@@ -24,7 +24,7 @@
     "socket.io": "^2.3.0"
   },
   "scripts": {
-    "start": "concurrently \"react-scripts start\" \"node ./backend/server.js\"",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

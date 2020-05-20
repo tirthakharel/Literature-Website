@@ -23,7 +23,7 @@ export default class Home extends React.Component {
           className="homeImg"
           src={logo}
           alt="Literature Logo"
-          style={{ marginTop: '10vh', marginBottom: '10vh' }}
+          style={{ marginBottom: '10vh' }}
         />
         <Row className="homeRow">
           <Col className="homeCol" sm={12} align="right">

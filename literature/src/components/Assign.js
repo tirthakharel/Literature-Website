@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Button } from 'antd';
+import { Row, Button, message } from 'antd';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import logo from '../lit-logo.png';
 import '../style/Home.css';
@@ -124,11 +124,11 @@ export default class Assign extends React.Component {
 
   startGame = () => {
     if (this.state.teamOne.length < 3 || this.state.teamTwo.length < 3) {
-      alert('There are not enough players on each team');
+      message.error('There are not enough players on each team');
     } else if (this.state.teamOne.length !== this.state.teamTwo.length) {
-      alert('There are not an equal number of players on each team');
+      message.error('There are not an equal number of players on each team');
     } else if (this.state.unassigned.length > 0) {
-      alert('Not all players have been assigned a team');
+      message.error('Not all players have been assigned a team');
     } else {
       this.props.socket.emit('start');
     }

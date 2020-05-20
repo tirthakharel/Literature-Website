@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Button, Modal, Radio, Select, Tabs } from 'antd';
+import { Row, Col, Button, Modal, Radio, Select, Tabs, message } from 'antd';
 import {
   BellOutlined,
   SwapOutlined,
@@ -47,6 +47,7 @@ export default class Game extends React.Component {
       declareSet: 'Select Set',
       declaredSetsTeamOne: [],
       declaredSetsTeamTwo: [],
+      declareMessage : ""
     };
   }
 
@@ -61,7 +62,10 @@ export default class Game extends React.Component {
       } else if (arr[i].team === 2) {
         teamTwo.push(arr[i]);
       }
+      console.log(arr[i].name);
+      console.log(this.props.playerName);
       if (arr[i].name === this.props.playerName) {
+        console.log("is Leader ");
         this.setState({
           cards: arr[i].hand,
           isTurn: arr[i].isTurn,
@@ -90,6 +94,14 @@ export default class Game extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    if (this.props.game.declareMessage !== prevProps.game.declareMessage) {
+      if (this.props.game.declareMessage.includes("incorrectly")) {
+        message.error(this.props.game.declareMessage);
+      } else {
+        message.success(this.props.game.declareMessage);
+      }
+    }
+
     let teamOne = [];
     let teamTwo = [];
     let cards = [];
@@ -100,6 +112,7 @@ export default class Game extends React.Component {
     let playerTurn = null;
     let arr = this.props.game.players;
     let transfer = prevState.transfer;
+    let isLeader = false;
     for (let i = 0; i < arr.length; i++) {
       if (arr[i].team === 1) {
         teamOne.push(arr[i]);
@@ -107,11 +120,13 @@ export default class Game extends React.Component {
         teamTwo.push(arr[i]);
       }
       if (arr[i].name === this.props.playerName) {
+        console.log("hello");
         cards = arr[i].hand;
         isTurn = arr[i].isTurn;
         availableCards = arr[i].availableCards;
         team = arr[i].team;
         availableSets = arr[i].sets;
+        isLeader = arr[i].leader;
         if (isTurn) {
           if (cards.length === 0) {
             transfer = true;
@@ -151,6 +166,7 @@ export default class Game extends React.Component {
         declaredSetsTeamTwo: this.props.game.declaredSetsTeam2,
         playerTurn: playerTurn,
         transfer: transfer,
+        isLeader: isLeader
       });
     }
   }
@@ -233,14 +249,6 @@ export default class Game extends React.Component {
       let player = this.props.playerName;
       let set = this.state.declareSet;
       this.props.socket.emit('declare', { player, cards, set }, (declare) => {
-        if (declare) {
-          this.setState({ transfer: true });
-          alert(player + ' correctly declared the ' + set);
-        } else {
-          this.setState({ transfer: false });
-          alert(player + ' incorrectly declared the ' + set);
-        }
-
         this.setState({
           askVisible: false,
           declareVisible: false,
@@ -248,6 +256,7 @@ export default class Game extends React.Component {
           declareMap: new Array(6),
           declareCards: [],
           declareSet: '',
+          transfer: declare
         });
       });
     }

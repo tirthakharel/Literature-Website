@@ -53,7 +53,6 @@ export default class App extends React.Component {
     }
 
     this.socket.on('gameData', (data) => {
-      console.log(data.game);
       this.setState({ game: data.game, play: data.game.started });
     });
     this.socket.on('startNew', (data) => {

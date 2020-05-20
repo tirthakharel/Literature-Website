@@ -27,7 +27,7 @@ export default class Game extends React.Component {
       helpVisible: false,
       askVisible: false,
       askPlayer: null,
-      askedCard: {suit: "", rank: "", set: ""},
+      askedCard: { suit: '', rank: '', set: '' },
       askSet: 'Select Set',
       availableCards: {},
       availableSetCards: [],
@@ -47,7 +47,7 @@ export default class Game extends React.Component {
       declareSet: 'Select Set',
       declaredSetsTeamOne: [],
       declaredSetsTeamTwo: [],
-      declareMessage : ""
+      declareMessage: '',
     };
   }
 
@@ -65,14 +65,14 @@ export default class Game extends React.Component {
       console.log(arr[i].name);
       console.log(this.props.playerName);
       if (arr[i].name === this.props.playerName) {
-        console.log("is Leader ");
+        console.log('is Leader ');
         this.setState({
           cards: arr[i].hand,
           isTurn: arr[i].isTurn,
           availableCards: arr[i].availableCards,
           team: arr[i].team,
           availableSets: arr[i].sets,
-          isLeader: arr[i].leader
+          isLeader: arr[i].leader,
         });
         if (arr[i].isTurn) {
           if (arr[i].hand.length === 0) {
@@ -89,13 +89,13 @@ export default class Game extends React.Component {
       teamTwoData: teamTwo,
       declaredSetsTeamOne: this.props.game.declaredSetsTeam1,
       declaredSetsTeamTwo: this.props.game.declaredSetsTeam2,
-      log: this.props.game.log
+      log: this.props.game.log,
     });
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props.game.declareMessage !== prevProps.game.declareMessage) {
-      if (this.props.game.declareMessage.includes("incorrectly")) {
+      if (this.props.game.declareMessage.includes('incorrectly')) {
         message.error(this.props.game.declareMessage);
       } else {
         message.success(this.props.game.declareMessage);
@@ -120,7 +120,7 @@ export default class Game extends React.Component {
         teamTwo.push(arr[i]);
       }
       if (arr[i].name === this.props.playerName) {
-        console.log("hello");
+        console.log('hello');
         cards = arr[i].hand;
         isTurn = arr[i].isTurn;
         availableCards = arr[i].availableCards;
@@ -166,7 +166,7 @@ export default class Game extends React.Component {
         declaredSetsTeamTwo: this.props.game.declaredSetsTeam2,
         playerTurn: playerTurn,
         transfer: transfer,
-        isLeader: isLeader
+        isLeader: isLeader,
       });
     }
   }
@@ -190,7 +190,7 @@ export default class Game extends React.Component {
         rank: e.target.dataset.rank,
         suit: e.target.dataset.suit,
         set: e.target.dataset.set,
-      }
+      },
     });
   };
 
@@ -202,7 +202,7 @@ export default class Game extends React.Component {
   handleAsk = (e) => {
     console.log(askedPlayer);
     console.log(this.state.askedCard);
-    if (this.state.askedCard.suit !== "" && askedPlayer != null) {
+    if (this.state.askedCard.suit !== '' && askedPlayer != null) {
       let card = this.state.askedCard;
       let source = this.props.playerName;
       let target = askedPlayer;
@@ -212,15 +212,17 @@ export default class Game extends React.Component {
           declareVisible: false,
           transferVisible: false,
           transfer: false,
-          availableSetCards: this.state.availableCards[this.state.askedCard.set],
+          availableSetCards: this.state.availableCards[
+            this.state.askedCard.set
+          ],
           askSet: asked ? this.state.askSet : '',
         });
         this.setState({
           askedCard: {
-            rank: "",
-            suit: "",
-            set: "",
-          }
+            rank: '',
+            suit: '',
+            set: '',
+          },
         });
       });
     }
@@ -256,7 +258,7 @@ export default class Game extends React.Component {
           declareMap: new Array(6),
           declareCards: [],
           declareSet: '',
-          transfer: declare
+          transfer: declare,
         });
       });
     }
@@ -341,7 +343,10 @@ export default class Game extends React.Component {
 
   render() {
     let hasEnded = 'none';
-    if (this.state.isLeader && (this.props.game.scoreTeam1 >= 5 || this.props.game.scoreTeam2 >= 5)) {
+    if (
+      this.state.isLeader &&
+      (this.props.game.scoreTeam1 >= 5 || this.props.game.scoreTeam2 >= 5)
+    ) {
       hasEnded = 'block';
     }
     return (
@@ -404,7 +409,11 @@ export default class Game extends React.Component {
                 <Board cards={this.state.cards} />
                 <div className="buttonrow">
                   <Button
-                    type={this.state.isTurn && this.state.cards.length !== 0 ? 'primary' : 'disabled'}
+                    type={
+                      this.state.isTurn && this.state.cards.length !== 0
+                        ? 'primary'
+                        : 'disabled'
+                    }
                     onClick={this.state.isTurn ? this.showAskModal : ''}
                     size="large"
                   >
@@ -412,7 +421,11 @@ export default class Game extends React.Component {
                     Ask
                   </Button>
                   <Button
-                    type={this.state.isTurn && this.state.cards.length !== 0 ? 'primary' : 'disabled'}
+                    type={
+                      this.state.isTurn && this.state.cards.length !== 0
+                        ? 'primary'
+                        : 'disabled'
+                    }
                     onClick={this.state.isTurn ? this.showDeclareModal : ''}
                     size="large"
                   >
@@ -497,7 +510,7 @@ export default class Game extends React.Component {
                     justify="center"
                     style={{ marginBottom: '20px' }}
                   >
-                    {this.state.askSet !== '' && (
+                    {this.state.askSet !== '' &&
                       this.state.availableSetCards.map((card) => (
                         <Card
                           type="ask"
@@ -507,8 +520,7 @@ export default class Game extends React.Component {
                           rank={card.rank}
                           set={card.set}
                         />
-                      ))
-                    )}
+                      ))}
                   </Row>
                   <Row align="middle" justify="center">
                     {this.state.log}
@@ -652,14 +664,55 @@ export default class Game extends React.Component {
                       <p>
                         Literature, or Fish, is a strategic turn-based card
                         game. The game is comprised of two teams whose objective
-                        is to win 5 sets.
+                        is to win 5 sets. The game progresses when players ask
+                        for cards and declare sets. Players must keep track of
+                        transactions, as only the most recent transaction is
+                        displayed in the log.
                       </p>
                     </TabPane>
-                    <TabPane tab="Ask" key="2">
-                      instructions
+                    <TabPane tab="Sets" key="2">
+                      <p>
+                        <b>Sets:</b> There are 9 sets in the game. "Low" sets
+                        are comprised of ranks 2-7 of a suit and "High" sets are
+                        comprised of ranks 9-A of a suit. The last set is
+                        comprised of all cards of rank 8 and the two jokers.
+                      </p>
                     </TabPane>
-                    <TabPane tab="Declare" key="3">
-                      instructions
+                    <TabPane tab="Ask" key="3">
+                      <p style={{ marginBottom: '3px' }}>
+                        <b>Ask:</b> On a players turn, they can ask a player of
+                        the opposite team whether or not they have a certain
+                        card. If they have the card, the card is transferred to
+                        the players hand, and it remains their turn. Otherwise,
+                        the turn is transferred to the player that was asked.
+                      </p>
+                      <p>
+                        Note: A player may only ask for a card if they possess
+                        another card from the same set. Also, a player may not
+                        ask for a card that they already possess.
+                      </p>
+                    </TabPane>
+                    <TabPane tab="Declare" key="4">
+                      <p style={{ marginBottom: '3px' }}>
+                        <b>Declare:</b> On a player's turn, they can choose to
+                        declare a set if they believe that all cards in a
+                        certain set are posessed by members of their team. When
+                        declaring, a player must correctly state where among
+                        their teammates all the cards in the chosen set are
+                        located. Keep in mind that during the game players will
+                        not be able to discuss their hands with any other
+                        player, so they must rely on their memory.
+                      </p>
+                      <p style={{ marginBottom: '3px' }}>
+                        If a player declares correctly, all the cards in the
+                        declared set get taken off the board and they win a
+                        point for their team. Otherwise, the point goes to the
+                        other team.
+                      </p>
+                      <p>
+                        After declaring correctly, a player may also choose to
+                        transfer their turn to a teammate.
+                      </p>
                     </TabPane>
                   </Tabs>
                 </Modal>
@@ -667,8 +720,38 @@ export default class Game extends React.Component {
             </div>
             <div className="footerRow">
               <span className="footer-info">
-                Made with &#10084; by Praneeth Alla, Tirtha Kharel, Ashwin
-                Nathan, and Ishaan Rao
+                Made with &#10084; by
+                <a
+                  href="https://www.linkedin.com/in/praneethalla/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Praneeth Alla
+                </a>
+                ,{' '}
+                <a
+                  href="https://www.linkedin.com/in/tirthakharel/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Tirtha Kharel
+                </a>
+                ,{' '}
+                <a
+                  href="https://www.linkedin.com/in/ashwinnathan00/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Ashwin Nathan
+                </a>
+                , and{' '}
+                <a
+                  href="https://www.linkedin.com/in/ishaanr21/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Ishaan Rao
+                </a>
               </span>
             </div>
           </Col>

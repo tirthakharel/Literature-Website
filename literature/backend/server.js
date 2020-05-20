@@ -179,7 +179,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
-    if (connectionGame != null) {
+    if (connectionPlayer !== null) {
       connectionPlayer.sockets.splice(
         connectionPlayer.sockets.indexOf(socket.id),
         1

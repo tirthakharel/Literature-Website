@@ -31,6 +31,10 @@
   text-align: center;
 }
 
+.homeRow > .footerRow {
+  margin-top: 5vh;
+}
+
 .footer-info {
   font-weight: 400;
   color: black;
@@ -151,13 +155,20 @@ h1.team-assign {
   font-weight: 200;
 }
 
+.team-header {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  right: 0;
+}
 .assign-panel {
   text-align: center;
-  padding: 10px 0;
+  padding: 50px 4%;
   height: 50vh;
   margin: 2vw;
   width: 25vw;
   overflow-y: scroll;
+  position: relative;
 }
 .assign-panel:first-child {
   margin-left: 8.3333vw;
@@ -172,7 +183,7 @@ h1.team-assign {
   background-color: #3f4757;
   color: white;
   font-size: 20px;
-  width: 75%;
+  width: 100%;
   margin: 10px auto;
   padding: 10px 0;
 }
@@ -252,6 +263,14 @@ li.ant-list-item > div:first-child {
 }
 
 @media (max-width: 767px) {
+  .instr-header {
+    font-size: 1.5em;
+  }
+
+  .team-header {
+    font-size: 1.65em;
+  }
+
   .lit-logo {
     width: 150px;
     height: 30.5025px;

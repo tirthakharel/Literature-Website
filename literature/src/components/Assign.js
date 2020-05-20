@@ -139,21 +139,25 @@ export default class Assign extends React.Component {
       <Row justify="middle" className="bg">
         <img
           src={logo}
+          className="homeImg"
           alt="Literature logo"
           style={{ marginBottom: '3vh', marginTop: '7vh' }}
-          width="550px"
         />
         {this.state.leader ? (
-          <h2>Drag and drop names to assign teams below</h2>
+          <h2 className="instr-header">
+            Drag and drop names to assign teams below
+          </h2>
         ) : (
-          <h2>Waiting for the game leader to assign teams...</h2>
+          <h2 className="instr-header">
+            Waiting for the game leader to assign teams...
+          </h2>
         )}
         <Row style={{ width: '100%', height: 'auto' }}>
           <DragDropContext onDragEnd={this.onDragEnd}>
             <Droppable droppableId="teamOne">
               {(provided, snapshot) => (
                 <div ref={provided.innerRef} className="panel assign-panel">
-                  <h1>Team One</h1>
+                  <h1 className="team-header">Team One</h1>
                   {this.state.teamOne.map((item, index) => (
                     <Draggable
                       key={item.id}
@@ -181,7 +185,7 @@ export default class Assign extends React.Component {
             <Droppable droppableId="unassigned">
               {(provided, snapshot) => (
                 <div ref={provided.innerRef} className="panel assign-panel">
-                  <h1>Unassigned</h1>
+                  <h1 className="team-header">Unassigned</h1>
                   {this.state.unassigned.map((item, index) => (
                     <Draggable
                       key={item.id}
@@ -208,7 +212,7 @@ export default class Assign extends React.Component {
             <Droppable droppableId="teamTwo">
               {(provided, snapshot) => (
                 <div ref={provided.innerRef} className="panel assign-panel">
-                  <h1>Team Two</h1>
+                  <h1 className="team-header">Team Two</h1>
                   {this.state.teamTwo.map((item, index) => (
                     <Draggable
                       key={item.id}

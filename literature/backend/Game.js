@@ -86,18 +86,18 @@ Game.prototype.ask = function ask(sourcePlayerName, targetPlayerName, card) {
     if (targetPlayer.hasCard(card)) {
       targetPlayer.removeFromHand(card);
       sourcePlayer.addToHand(card);
-      this.log = `${sourcePlayerName} took the ${Card.toString(
+      this.log = `<span style="color: #1890FF">${sourcePlayerName}</span> took the ${Card.toString(
         card
-      )} from ${targetPlayerName}`;
+      )} from <span style="color: #1890FF">${targetPlayerName}</span>`;
       sourcePlayer.allAvailableCards();
       targetPlayer.allAvailableCards();
       return true;
     } else {
       sourcePlayer.isTurn = false;
       targetPlayer.isTurn = true;
-      this.log = `${sourcePlayerName} asked for the ${Card.toString(
+      this.log = `<span style="color: #1890FF">${sourcePlayerName}</span> asked for the ${Card.toString(
         card
-      )} from ${targetPlayerName}`;
+      )} from <span style="color: #1890FF">${targetPlayerName}</span>`;
       sourcePlayer.allAvailableCards();
       targetPlayer.allAvailableCards();
       return false;

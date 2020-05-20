@@ -12,6 +12,7 @@ import TeamInfo from './TeamInfo.js';
 import Board from './Board';
 import Card from './Card';
 import allSets from '../constants/constants.js';
+import ReactHtmlParser from 'react-html-parser'; 
 
 const { TabPane } = Tabs;
 const { Option } = Select;
@@ -245,6 +246,21 @@ export default class Game extends React.Component {
 
   handleDeclare = (e) => {
     e.preventDefault();
+
+    for (let i = 0; i < this.state.declareCards.length; i++) {
+      if (this.hasCard(this.state.declareCards[i], i)) {
+
+        let map = this.state.declareMap;
+
+        map[i] = {
+          player: this.props.playerName,
+          card: this.state.declareCards[i],
+        };
+
+        this.setState({ declareMap: map });
+      }
+    }
+
     console.log(this.state.declareMap);
     if (Object.keys(this.state.declareMap).length === 6) {
       let cards = this.state.declareMap;
@@ -293,6 +309,16 @@ export default class Game extends React.Component {
 
     this.setState({ declareMap: map });
   };
+
+  hasCard = (card, index) => {
+    for (let i = 0; i < this.state.cards.length; i++) {
+      if (this.state.cards[i].rank === card.rank && this.state.cards[i].suit === card.suit) {
+        return true;
+      }
+    }
+
+    return false;
+  }
 
   //Transfer Modal Events
   showTransferModal = () => {
@@ -405,7 +431,7 @@ export default class Game extends React.Component {
                 align="middle"
                 style={{ flexDirection: 'column' }}
               >
-                <h1 className="log">{this.state.log}</h1>
+                <h1 className="log">{ReactHtmlParser (this.state.log)}</h1>
                 <Board cards={this.state.cards} />
                 <div className="buttonrow">
                   <Button
@@ -523,7 +549,7 @@ export default class Game extends React.Component {
                       ))}
                   </Row>
                   <Row align="middle" justify="center">
-                    {this.state.log}
+                    <p>{ReactHtmlParser (this.state.log)}</p>
                   </Row>
                 </Modal>
                 <Modal
@@ -537,7 +563,7 @@ export default class Game extends React.Component {
                     </Button>,
                     <Button
                       onClick={this.handleDeclare}
-                      key="ask"
+                      key="declare"
                       type="primary"
                     >
                       Declare
@@ -582,24 +608,54 @@ export default class Game extends React.Component {
                           </span>
                         </Col>
                         <Col span={15}>
-                          <Radio.Group
-                            onChange={this.handleDeclareMap}
-                            data-index={index}
-                            name={index}
-                            buttonStyle="solid"
-                          >
-                            {this.props.game.players.map((player) => {
-                              if (player.team === this.state.team) {
-                                return (
-                                  <Radio.Button value={player.name}>
-                                    {player.name}
-                                  </Radio.Button>
-                                );
-                              }
+                          {this.hasCard(card, index) ?
+                            <Radio.Group
+                              onChange={this.handleDeclareMap}
+                              data-index={index}
+                              name={index}
+                              buttonStyle="solid"
+                              defaultValue={this.props.playerName}
+                              disabled
+                            >
+                              {this.props.game.players.map((player) => {
+                                if (player.team === this.state.team) {
+                                  if (player.name === this.props.playerName) {
+                                    return (
+                                      <Radio.Button  style={{backgroundColor: '#1890FF'}} value={player.name}>
+                                        {player.name}
+                                      </Radio.Button>
+                                    );
+                                  } else {
+                                    return (
+                                      <Radio.Button  style={{backgroundColor: '#FFFFFF'}} value={player.name}>
+                                        {player.name}
+                                      </Radio.Button>
+                                    );
+                                  }
+                                }
 
-                              return <span></span>;
-                            })}
-                          </Radio.Group>
+                                return <span></span>;
+                              })}
+                            </Radio.Group>
+                            : <Radio.Group
+                                onChange={this.handleDeclareMap}
+                                data-index={index}
+                                name={index}
+                                buttonStyle="solid"
+                              >
+                                {this.props.game.players.map((player) => {
+                                  if (player.team === this.state.team) {
+                                    return (
+                                      <Radio.Button value={player.name}>
+                                        {player.name}
+                                      </Radio.Button>
+                                    );
+                                  }
+
+                                  return <span></span>;
+                                })}
+                              </Radio.Group>
+                          } 
                         </Col>
                       </Row>
                     ))}
@@ -615,7 +671,7 @@ export default class Game extends React.Component {
                       Cancel
                     </Button>,
                     <Button
-                      key="ask"
+                      key="transfer"
                       type="primary"
                       onClick={this.handleTransfer}
                     >
@@ -720,7 +776,7 @@ export default class Game extends React.Component {
             </div>
             <div className="footerRow">
               <span className="footer-info">
-                Made with &#10084; by
+                Made with &#10084;by{' '}
                 <a
                   href="https://www.linkedin.com/in/praneethalla/"
                   target="_blank"

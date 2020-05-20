@@ -140,19 +140,21 @@ Game.prototype.declare = function declare(playerName, cards, set) {
 
 Game.prototype.checkTeamNoCards = function checkTeamNoCards(player) {
   let transfer = true;
-  let otherTeamPlayer = null;
+  let otherTeamPlayers = [];
   for (let i = 0; i < this.players.length; i++) {
     if (this.players[i].team === player.team) {
       if (this.players[i].hand.length !== 0) {
         transfer = false;
       }
     } else {
-      otherTeamPlayer = this.players[i];
+      otherTeamPlayers.push(this.players[i]);
     }
   }
   if (transfer) {
-    otherTeamPlayer.isTurn = true;
     player.isTurn = false;
+    for (let i = 0; i < otherTeamPlayers.length; i++) {
+      otherTeamPlayers[i].isTurn = true;
+    }
   }
 };
 

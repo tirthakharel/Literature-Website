@@ -40,6 +40,7 @@ export default class Game extends React.Component {
       team: null,
       cards: [],
       isTurn: false,
+      isLeader: false,
       playerTurn: null,
       log: null,
       declareMap: new Array(6),
@@ -67,7 +68,7 @@ export default class Game extends React.Component {
           availableCards: arr[i].availableCards,
           team: arr[i].team,
           availableSets: arr[i].sets,
-          log: this.props.game.log,
+          isLeader: arr[i].leader
         });
         if (arr[i].isTurn) {
           if (arr[i].hand.length === 0) {
@@ -84,6 +85,7 @@ export default class Game extends React.Component {
       teamTwoData: teamTwo,
       declaredSetsTeamOne: this.props.game.declaredSetsTeam1,
       declaredSetsTeamTwo: this.props.game.declaredSetsTeam2,
+      log: this.props.game.log
     });
   }
 
@@ -330,7 +332,7 @@ export default class Game extends React.Component {
 
   render() {
     let hasEnded = 'none';
-    if (this.props.game.scoreTeam1 >= 5 || this.props.game.scoreTeam2 >= 5) {
+    if (this.state.isLeader && (this.props.game.scoreTeam1 >= 5 || this.props.game.scoreTeam2 >= 5)) {
       hasEnded = 'block';
     }
     return (
@@ -402,7 +404,7 @@ export default class Game extends React.Component {
                 <Board cards={this.state.cards} />
                 <div className="buttonrow">
                   <Button
-                    type={this.state.isTurn ? 'primary' : 'disabled'}
+                    type={this.state.isTurn && this.state.cards.length !== 0 ? 'primary' : 'disabled'}
                     onClick={this.state.isTurn ? this.showAskModal : ''}
                     size="large"
                   >
@@ -410,7 +412,7 @@ export default class Game extends React.Component {
                     Ask
                   </Button>
                   <Button
-                    type={this.state.isTurn ? 'primary' : 'disabled'}
+                    type={this.state.isTurn && this.state.cards.length !== 0 ? 'primary' : 'disabled'}
                     onClick={this.state.isTurn ? this.showDeclareModal : ''}
                     size="large"
                   >

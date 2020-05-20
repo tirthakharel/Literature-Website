@@ -1,44 +1,21 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const session = require('express-session');
-const mongoose = require('mongoose');
-const mongoStore = require('connect-mongo')(session);
-const cookie = require('cookie');
 const cors = require('cors');
 const socketIO = require('socket.io');
 const http = require('http');
 const Game = require('./Game.js');
 require('dotenv').config();
+
 // app
 const app = express();
-mongoose.connect(process.env.DB_CONN, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
 
 app.use(bodyParser.json());
 app.use(cors());
-
-const sessionMiddleware = session({
-  secret: process.env.SECRET_KEY,
-  store: new mongoStore({ mongooseConnection: mongoose.connection }),
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    maxAge: 1000 * 60 * 60 * 8,
-  },
-});
 
 const port = process.env.PORT || 5000;
 
 const server = http.createServer(app);
 const io = socketIO(server);
-
-io.use((socket, next) => {
-  sessionMiddleware(socket.request, socket.request.res || {}, next);
-});
-
-app.use(sessionMiddleware);
 
 let games = [];
 

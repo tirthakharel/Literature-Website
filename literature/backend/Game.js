@@ -12,6 +12,7 @@ function Game(code) {
   this.declaredSetsTeam1 = [];
   this.declaredSetsTeam2 = [];
   this.log = "Let's start the game!";
+  this.declareMessage = "";
   this.deck = new Deck();
 }
 
@@ -118,6 +119,7 @@ Game.prototype.declare = function declare(playerName, cards, set) {
           this.declaredSetsTeam1.push(set);
         }
 
+        this.declareMessage = `${playerName} incorrectly declared the ${set}`;
         this.deleteCards(set);
         this.checkTeamNoCards(player);
         return false;
@@ -132,6 +134,7 @@ Game.prototype.declare = function declare(playerName, cards, set) {
       this.declaredSetsTeam2.push(set);
     }
 
+    this.declareMessage = `${playerName} correctly declared the ${set}`;
     this.deleteCards(set);
     this.checkTeamNoCards(player);
     return true;
@@ -140,19 +143,21 @@ Game.prototype.declare = function declare(playerName, cards, set) {
 
 Game.prototype.checkTeamNoCards = function checkTeamNoCards(player) {
   let transfer = true;
-  let otherTeamPlayer = null;
+  let otherTeamPlayers = [];
   for (let i = 0; i < this.players.length; i++) {
     if (this.players[i].team === player.team) {
       if (this.players[i].hand.length !== 0) {
         transfer = false;
       }
     } else {
-      otherTeamPlayer = this.players[i];
+      otherTeamPlayers.push(this.players[i]);
     }
   }
   if (transfer) {
-    otherTeamPlayer.isTurn = true;
     player.isTurn = false;
+    for (let i = 0; i < otherTeamPlayers.length; i++) {
+      otherTeamPlayers[i].isTurn = true;
+    }
   }
 };
 

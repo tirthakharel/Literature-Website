@@ -8,7 +8,6 @@ export default class Card extends React.Component {
 
     this.state = {
       path: '',
-      clicked: false,
     };
   }
 
@@ -35,11 +34,14 @@ export default class Card extends React.Component {
   render() {
     if (this.state.path !== '') {
       if (this.props.type === 'ask') {
+        console.log(this.props.checked.suit);
+        console.log(this.props.checked.rank);
         return (
           <div className="askwrapper">
             <label>
               <input
                 onClick={this.props.clickFunc}
+                checked={this.props.checked.suit === this.props.suit && this.props.checked.rank === this.props.rank}
                 type="radio"
                 name="test"
                 data-suit={this.props.suit}

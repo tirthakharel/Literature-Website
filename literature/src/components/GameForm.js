@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import '../style/Home.css';
 import 'antd/dist/antd.css';
@@ -12,7 +12,7 @@ export default class GameForm extends React.Component {
     if (this.props.text === 'Join Game') {
       this.props.socket.emit('join', { name, code }, (response) => {
         if (response.error) {
-          alert(response.error);
+          message.error(response.error);
         } else {
           const playerID = response.id;
           const code = response.code;
@@ -28,7 +28,7 @@ export default class GameForm extends React.Component {
     } else if (this.props.text === 'Create Game') {
       this.props.socket.emit('create', { name, code }, (response) => {
         if (response.error) {
-          alert(response.error);
+          message.error(response.error);
         } else {
           const playerID = response.id;
           const code = response.code;

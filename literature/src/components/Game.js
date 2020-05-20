@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Button, Modal, Radio, Select, Tabs } from 'antd';
+import { Row, Col, Button, Modal, Radio, Select, Tabs, message } from 'antd';
 import {
   BellOutlined,
   SwapOutlined,
@@ -16,7 +16,6 @@ import allSets from '../constants/constants.js';
 const { TabPane } = Tabs;
 const { Option } = Select;
 
-let askedCard = null;
 let askedPlayer = null;
 let transferPlayer = null;
 
@@ -28,7 +27,7 @@ export default class Game extends React.Component {
       helpVisible: false,
       askVisible: false,
       askPlayer: null,
-      askCard: null,
+      askedCard: {suit: "", rank: "", set: ""},
       askSet: 'Select Set',
       availableCards: {},
       availableSetCards: [],
@@ -41,12 +40,14 @@ export default class Game extends React.Component {
       team: null,
       cards: [],
       isTurn: false,
+      isLeader: false,
       playerTurn: null,
       log: null,
       declareMap: new Array(6),
       declareSet: 'Select Set',
       declaredSetsTeamOne: [],
       declaredSetsTeamTwo: [],
+      declareMessage : ""
     };
   }
 
@@ -61,14 +62,17 @@ export default class Game extends React.Component {
       } else if (arr[i].team === 2) {
         teamTwo.push(arr[i]);
       }
+      console.log(arr[i].name);
+      console.log(this.props.playerName);
       if (arr[i].name === this.props.playerName) {
+        console.log("is Leader ");
         this.setState({
           cards: arr[i].hand,
           isTurn: arr[i].isTurn,
           availableCards: arr[i].availableCards,
           team: arr[i].team,
           availableSets: arr[i].sets,
-          log: this.props.game.log,
+          isLeader: arr[i].leader
         });
         if (arr[i].isTurn) {
           if (arr[i].hand.length === 0) {
@@ -85,10 +89,19 @@ export default class Game extends React.Component {
       teamTwoData: teamTwo,
       declaredSetsTeamOne: this.props.game.declaredSetsTeam1,
       declaredSetsTeamTwo: this.props.game.declaredSetsTeam2,
+      log: this.props.game.log
     });
   }
 
   componentDidUpdate(prevProps, prevState) {
+    if (this.props.game.declareMessage !== prevProps.game.declareMessage) {
+      if (this.props.game.declareMessage.includes("incorrectly")) {
+        message.error(this.props.game.declareMessage);
+      } else {
+        message.success(this.props.game.declareMessage);
+      }
+    }
+
     let teamOne = [];
     let teamTwo = [];
     let cards = [];
@@ -99,6 +112,7 @@ export default class Game extends React.Component {
     let playerTurn = null;
     let arr = this.props.game.players;
     let transfer = prevState.transfer;
+    let isLeader = false;
     for (let i = 0; i < arr.length; i++) {
       if (arr[i].team === 1) {
         teamOne.push(arr[i]);
@@ -106,11 +120,13 @@ export default class Game extends React.Component {
         teamTwo.push(arr[i]);
       }
       if (arr[i].name === this.props.playerName) {
+        console.log("hello");
         cards = arr[i].hand;
         isTurn = arr[i].isTurn;
         availableCards = arr[i].availableCards;
         team = arr[i].team;
         availableSets = arr[i].sets;
+        isLeader = arr[i].leader;
         if (isTurn) {
           if (cards.length === 0) {
             transfer = true;
@@ -150,6 +166,7 @@ export default class Game extends React.Component {
         declaredSetsTeamTwo: this.props.game.declaredSetsTeam2,
         playerTurn: playerTurn,
         transfer: transfer,
+        isLeader: isLeader
       });
     }
   }
@@ -168,11 +185,13 @@ export default class Game extends React.Component {
   };
 
   cardClicked = (e) => {
-    askedCard = {
-      rank: e.target.dataset.rank,
-      suit: e.target.dataset.suit,
-      set: e.target.dataset.set,
-    };
+    this.setState({
+      askedCard: {
+        rank: e.target.dataset.rank,
+        suit: e.target.dataset.suit,
+        set: e.target.dataset.set,
+      }
+    });
   };
 
   playerClicked = (e) => {
@@ -182,9 +201,9 @@ export default class Game extends React.Component {
 
   handleAsk = (e) => {
     console.log(askedPlayer);
-    console.log(askedCard);
-    if (askedCard != null && askedPlayer != null) {
-      let card = askedCard;
+    console.log(this.state.askedCard);
+    if (this.state.askedCard.suit !== "" && askedPlayer != null) {
+      let card = this.state.askedCard;
       let source = this.props.playerName;
       let target = askedPlayer;
       this.props.socket.emit('ask', { source, target, card }, (asked) => {
@@ -193,10 +212,16 @@ export default class Game extends React.Component {
           declareVisible: false,
           transferVisible: false,
           transfer: false,
-          availableSetCards: this.state.availableCards[askedCard.set],
+          availableSetCards: this.state.availableCards[this.state.askedCard.set],
           askSet: asked ? this.state.askSet : '',
         });
-        askedCard = null;
+        this.setState({
+          askedCard: {
+            rank: "",
+            suit: "",
+            set: "",
+          }
+        });
       });
     }
   };
@@ -224,14 +249,6 @@ export default class Game extends React.Component {
       let player = this.props.playerName;
       let set = this.state.declareSet;
       this.props.socket.emit('declare', { player, cards, set }, (declare) => {
-        if (declare) {
-          this.setState({ transfer: true });
-          alert(player + ' correctly declared the ' + set);
-        } else {
-          this.setState({ transfer: false });
-          alert(player + ' incorrectly declared the ' + set);
-        }
-
         this.setState({
           askVisible: false,
           declareVisible: false,
@@ -239,6 +256,7 @@ export default class Game extends React.Component {
           declareMap: new Array(6),
           declareCards: [],
           declareSet: '',
+          transfer: declare
         });
       });
     }
@@ -323,7 +341,7 @@ export default class Game extends React.Component {
 
   render() {
     let hasEnded = 'none';
-    if (this.props.game.scoreTeam1 >= 5 || this.props.game.scoreTeam2 >= 5) {
+    if (this.state.isLeader && (this.props.game.scoreTeam1 >= 5 || this.props.game.scoreTeam2 >= 5)) {
       hasEnded = 'block';
     }
     return (
@@ -386,7 +404,7 @@ export default class Game extends React.Component {
                 <Board cards={this.state.cards} />
                 <div className="buttonrow">
                   <Button
-                    type={this.state.isTurn ? 'primary' : 'disabled'}
+                    type={this.state.isTurn && this.state.cards.length !== 0 ? 'primary' : 'disabled'}
                     onClick={this.state.isTurn ? this.showAskModal : ''}
                     size="large"
                   >
@@ -394,7 +412,7 @@ export default class Game extends React.Component {
                     Ask
                   </Button>
                   <Button
-                    type={this.state.isTurn ? 'primary' : 'disabled'}
+                    type={this.state.isTurn && this.state.cards.length !== 0 ? 'primary' : 'disabled'}
                     onClick={this.state.isTurn ? this.showDeclareModal : ''}
                     size="large"
                   >
@@ -479,15 +497,18 @@ export default class Game extends React.Component {
                     justify="center"
                     style={{ marginBottom: '20px' }}
                   >
-                    {this.state.availableSetCards.map((card) => (
-                      <Card
-                        type="ask"
-                        clickFunc={this.cardClicked}
-                        suit={card.suit}
-                        rank={card.rank}
-                        set={card.set}
-                      />
-                    ))}
+                    {this.state.askSet !== '' && (
+                      this.state.availableSetCards.map((card) => (
+                        <Card
+                          type="ask"
+                          checked={this.state.askedCard}
+                          clickFunc={this.cardClicked}
+                          suit={card.suit}
+                          rank={card.rank}
+                          set={card.set}
+                        />
+                      ))
+                    )}
                   </Row>
                   <Row align="middle" justify="center">
                     {this.state.log}
